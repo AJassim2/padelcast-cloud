@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Target 'PadelCast' in project 'PadelCast'
+➜ Explicit dependency on target 'PadelCast Watch App Watch App' in project 'PadelCast'
+Target 'PadelCast Watch App Watch App' in project 'PadelCast' (no dependencies)

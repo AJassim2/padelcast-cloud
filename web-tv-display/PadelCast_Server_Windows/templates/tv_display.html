@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PadelCast TV - {{ code }}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .code {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            font-family: monospace;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 120px);
+            padding: 20px;
+        }
+        
+        .teams-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex: 1;
+            gap: 40px;
+        }
+        
+        .team-card {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.4);
+        }
+        
+        .team-name {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .score-section {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        
+        .score-item {
+            text-align: center;
+        }
+        
+        .score-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .vs-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .match-status {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .match-finished {
+            background: rgba(76, 175, 80, 0.3);
+            border: 2px solid #4CAF50;
+        }
+        
+        .winner {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .footer {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .connected {
+            color: #4CAF50;
+        }
+        
+        .disconnected {
+            color: #f44336;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-size: 2rem;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-right: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .teams-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .team-name {
+                font-size: 2rem;
+            }
+            
+            .score-value {
+                font-size: 2.5rem;
+            }
+            
+            .vs-section {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <span>Connecting to match...</span>
+    </div>
+    
+    <div class="connection-status" id="connectionStatus">
+        <span id="statusText">Connecting...</span>
+    </div>
+    
+    <div class="header">
+        <div class="logo">🎾 PadelCast</div>
+        <div class="code">Code: {{ code }}</div>
+    </div>
+    
+    <div class="main-content" id="mainContent" style="display: none;">
+        <div class="teams-container">
+            <div class="team-card" id="team1Card">
+                <div class="team-name" id="team1Name">{{ team1_name }}</div>
+                <div class="score-section">
+                    <div class="score-item">
+                        <div class="score-label">Point</div>
+                        <div class="score-value" id="team1GameScore">0</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Games</div>
+                        <div class="score-value" id="team1Games">0</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Sets</div>
+                        <div class="score-value" id="team1Sets">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="vs-section">
+                VS
+            </div>
+            
+            <div class="team-card" id="team2Card">
+                <div class="team-name" id="team2Name">{{ team2_name }}</div>
+                <div class="score-section">
+                    <div class="score-item">
+                        <div class="score-label">Point</div>
+                        <div class="score-value" id="team2GameScore">0</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Games</div>
+                        <div class="score-value" id="team2Games">0</div>
+                    </div>
+                    <div class="score-item">
+                        <div class="score-label">Sets</div>
+                        <div class="score-value" id="team2Sets">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="match-status" id="matchStatus">
+            <div id="statusMessage">Match in progress...</div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div>Last updated: <span id="lastUpdated">-</span></div>
+    </div>
+
+    <script>
+        const code = '{{ code }}';
+        const socket = io();
+        
+        // Connection status
+        const connectionStatus = document.getElementById('connectionStatus');
+        const statusText = document.getElementById('statusText');
+        
+        socket.on('connect', function() {
+            statusText.textContent = 'Connected';
+            connectionStatus.className = 'connection-status connected';
+            socket.emit('join', { code: code });
+        });
+        
+        socket.on('disconnect', function() {
+            statusText.textContent = 'Disconnected';
+            connectionStatus.className = 'connection-status disconnected';
+        });
+        
+        // Handle match updates
+        socket.on('match_update', function(data) {
+            updateDisplay(data);
+        });
+        
+        function updateDisplay(data) {
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'flex';
+            
+            // Update team names
+            document.getElementById('team1Name').textContent = data.team1_name;
+            document.getElementById('team2Name').textContent = data.team2_name;
+            
+            // Update scores
+            document.getElementById('team1GameScore').textContent = data.team1_game_score;
+            document.getElementById('team2GameScore').textContent = data.team2_game_score;
+            document.getElementById('team1Games').textContent = data.team1_games;
+            document.getElementById('team2Games').textContent = data.team2_games;
+            document.getElementById('team1Sets').textContent = data.team1_sets;
+            document.getElementById('team2Sets').textContent = data.team2_sets;
+            
+            // Update match status
+            const matchStatus = document.getElementById('matchStatus');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            if (data.is_match_finished) {
+                matchStatus.className = 'match-status match-finished';
+                if (data.winning_team) {
+                    const winnerName = data.winning_team === 1 ? data.team1_name : data.team2_name;
+                    statusMessage.innerHTML = `<div class="winner">🏆 Winner: ${winnerName}</div>`;
+                } else {
+                    statusMessage.textContent = 'Match finished';
+                }
+            } else {
+                matchStatus.className = 'match-status';
+                statusMessage.textContent = 'Match in progress...';
+            }
+            
+            // Update last updated time
+            const lastUpdated = new Date(data.last_updated);
+            document.getElementById('lastUpdated').textContent = lastUpdated.toLocaleTimeString();
+            
+            // Add pulse animation to updated scores
+            const scoreElements = [
+                document.getElementById('team1GameScore'),
+                document.getElementById('team2GameScore'),
+                document.getElementById('team1Games'),
+                document.getElementById('team2Games'),
+                document.getElementById('team1Sets'),
+                document.getElementById('team2Sets')
+            ];
+            
+            scoreElements.forEach(el => {
+                el.classList.add('pulse');
+                setTimeout(() => el.classList.remove('pulse'), 1000);
+            });
+        }
+        
+        // Load initial data
+        async function loadInitialData() {
+            try {
+                const response = await fetch(`/api/match-status/${code}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateDisplay(data.match);
+                } else {
+                    console.error('Error loading match data:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading initial data:', error);
+            }
+        }
+        
+        // Load initial data when page loads
+        loadInitialData();
+        
+        // Auto-refresh every 30 seconds as backup
+        setInterval(loadInitialData, 30000);
+    </script>
+</body>
+</html>

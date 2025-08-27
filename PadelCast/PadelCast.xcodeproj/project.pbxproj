@@ -1,0 +1,554 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		29473E9E2E5B7F66009D9D58 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29473E9D2E5B7F66009D9D58 /* Assets.xcassets */; };
+		29473EA12E5B7F66009D9D58 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29473EA02E5B7F66009D9D58 /* Preview Assets.xcassets */; };
+		29473EAE2E5B81D6009D9D58 /* PadelCast_Watch_AppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29473EAD2E5B81D6009D9D58 /* PadelCast_Watch_AppApp.swift */; };
+		29473EB02E5B81D6009D9D58 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29473EAF2E5B81D6009D9D58 /* ContentView.swift */; };
+		29473EB22E5B81DA009D9D58 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29473EB12E5B81DA009D9D58 /* Assets.xcassets */; };
+		29473EB52E5B81DA009D9D58 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29473EB42E5B81DA009D9D58 /* Preview Assets.xcassets */; };
+		29473EB82E5B81DA009D9D58 /* PadelCast Watch App Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 29473EAB2E5B81D6009D9D58 /* PadelCast Watch App Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		29473ED42E5B8C83009D9D58 /* PadelCastApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29473ED32E5B8C83009D9D58 /* PadelCastApp.swift */; };
+		29473ED62E5B8CB1009D9D58 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29473ED52E5B8CB1009D9D58 /* ContentView.swift */; };
+		29473ED82E5B8CDE009D9D58 /* ExternalDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29473ED72E5B8CDD009D9D58 /* ExternalDisplayView.swift */; };
+		29473EDA2E5B8CEC009D9D58 /* ScoreboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29473ED92E5B8CEC009D9D58 /* ScoreboardView.swift */; };
+		29473EDE2E5B8FE5009D9D58 /* Shared in Resources */ = {isa = PBXBuildFile; fileRef = 29473EDD2E5B8FE5009D9D58 /* Shared */; };
+		29473EDF2E5B8FE5009D9D58 /* Shared in Resources */ = {isa = PBXBuildFile; fileRef = 29473EDD2E5B8FE5009D9D58 /* Shared */; };
+		29473EE32E5B9254009D9D58 /* ScoreModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29473EE22E5B9254009D9D58 /* ScoreModel.swift */; };
+		29473EE52E5B9269009D9D58 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29473EE42E5B9269009D9D58 /* WatchConnectivityManager.swift */; };
+		29473EE62E5B9272009D9D58 /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29473EE42E5B9269009D9D58 /* WatchConnectivityManager.swift */; };
+		29473EE72E5B9276009D9D58 /* ScoreModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29473EE22E5B9254009D9D58 /* ScoreModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		29473EB62E5B81DA009D9D58 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29473E8E2E5B7F64009D9D58 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 29473EAA2E5B81D6009D9D58;
+			remoteInfo = "PadelCast Watch App Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		29473EBC2E5B81DA009D9D58 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				29473EB82E5B81DA009D9D58 /* PadelCast Watch App Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		29473E962E5B7F64009D9D58 /* PadelCast.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PadelCast.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		29473E9D2E5B7F66009D9D58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		29473EA02E5B7F66009D9D58 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		29473EAB2E5B81D6009D9D58 /* PadelCast Watch App Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PadelCast Watch App Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		29473EAD2E5B81D6009D9D58 /* PadelCast_Watch_AppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PadelCast_Watch_AppApp.swift; sourceTree = "<group>"; };
+		29473EAF2E5B81D6009D9D58 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		29473EB12E5B81DA009D9D58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		29473EB42E5B81DA009D9D58 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		29473ECD2E5B8673009D9D58 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		29473ED32E5B8C83009D9D58 /* PadelCastApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PadelCastApp.swift; path = ../../PadelCastApp.swift; sourceTree = "<group>"; };
+		29473ED52E5B8CB1009D9D58 /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = ../../ContentView.swift; sourceTree = "<group>"; };
+		29473ED72E5B8CDD009D9D58 /* ExternalDisplayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ExternalDisplayView.swift; path = ../../ExternalDisplayView.swift; sourceTree = "<group>"; };
+		29473ED92E5B8CEC009D9D58 /* ScoreboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScoreboardView.swift; path = ../../ScoreboardView.swift; sourceTree = "<group>"; };
+		29473EDD2E5B8FE5009D9D58 /* Shared */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Shared; sourceTree = "<group>"; };
+		29473EE22E5B9254009D9D58 /* ScoreModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoreModel.swift; path = Shared/ScoreModel.swift; sourceTree = "<group>"; };
+		29473EE42E5B9269009D9D58 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WatchConnectivityManager.swift; path = Shared/WatchConnectivityManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		29473E932E5B7F64009D9D58 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29473EA82E5B81D6009D9D58 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		29473E8D2E5B7F64009D9D58 = {
+			isa = PBXGroup;
+			children = (
+				29473EE42E5B9269009D9D58 /* WatchConnectivityManager.swift */,
+				29473EE22E5B9254009D9D58 /* ScoreModel.swift */,
+				29473EDD2E5B8FE5009D9D58 /* Shared */,
+				29473E982E5B7F64009D9D58 /* PadelCast */,
+				29473EAC2E5B81D6009D9D58 /* PadelCast Watch App Watch App */,
+				29473E972E5B7F64009D9D58 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		29473E972E5B7F64009D9D58 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				29473E962E5B7F64009D9D58 /* PadelCast.app */,
+				29473EAB2E5B81D6009D9D58 /* PadelCast Watch App Watch App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29473E982E5B7F64009D9D58 /* PadelCast */ = {
+			isa = PBXGroup;
+			children = (
+				29473ED92E5B8CEC009D9D58 /* ScoreboardView.swift */,
+				29473ED72E5B8CDD009D9D58 /* ExternalDisplayView.swift */,
+				29473ED52E5B8CB1009D9D58 /* ContentView.swift */,
+				29473ED32E5B8C83009D9D58 /* PadelCastApp.swift */,
+				29473ECD2E5B8673009D9D58 /* Info.plist */,
+				29473E9D2E5B7F66009D9D58 /* Assets.xcassets */,
+				29473E9F2E5B7F66009D9D58 /* Preview Content */,
+			);
+			path = PadelCast;
+			sourceTree = "<group>";
+		};
+		29473E9F2E5B7F66009D9D58 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				29473EA02E5B7F66009D9D58 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		29473EAC2E5B81D6009D9D58 /* PadelCast Watch App Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				29473EAD2E5B81D6009D9D58 /* PadelCast_Watch_AppApp.swift */,
+				29473EAF2E5B81D6009D9D58 /* ContentView.swift */,
+				29473EB12E5B81DA009D9D58 /* Assets.xcassets */,
+				29473EB32E5B81DA009D9D58 /* Preview Content */,
+			);
+			path = "PadelCast Watch App Watch App";
+			sourceTree = "<group>";
+		};
+		29473EB32E5B81DA009D9D58 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				29473EB42E5B81DA009D9D58 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		29473E952E5B7F64009D9D58 /* PadelCast */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29473EA42E5B7F66009D9D58 /* Build configuration list for PBXNativeTarget "PadelCast" */;
+			buildPhases = (
+				29473E922E5B7F64009D9D58 /* Sources */,
+				29473E932E5B7F64009D9D58 /* Frameworks */,
+				29473E942E5B7F64009D9D58 /* Resources */,
+				29473EBC2E5B81DA009D9D58 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				29473EB72E5B81DA009D9D58 /* PBXTargetDependency */,
+			);
+			name = PadelCast;
+			productName = PadelCast;
+			productReference = 29473E962E5B7F64009D9D58 /* PadelCast.app */;
+			productType = "com.apple.product-type.application";
+		};
+		29473EAA2E5B81D6009D9D58 /* PadelCast Watch App Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 29473EB92E5B81DA009D9D58 /* Build configuration list for PBXNativeTarget "PadelCast Watch App Watch App" */;
+			buildPhases = (
+				29473EA72E5B81D6009D9D58 /* Sources */,
+				29473EA82E5B81D6009D9D58 /* Frameworks */,
+				29473EA92E5B81D6009D9D58 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "PadelCast Watch App Watch App";
+			productName = "PadelCast Watch App Watch App";
+			productReference = 29473EAB2E5B81D6009D9D58 /* PadelCast Watch App Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29473E8E2E5B7F64009D9D58 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					29473E952E5B7F64009D9D58 = {
+						CreatedOnToolsVersion = 14.3;
+					};
+					29473EAA2E5B81D6009D9D58 = {
+						CreatedOnToolsVersion = 14.3;
+					};
+				};
+			};
+			buildConfigurationList = 29473E912E5B7F64009D9D58 /* Build configuration list for PBXProject "PadelCast" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 29473E8D2E5B7F64009D9D58;
+			productRefGroup = 29473E972E5B7F64009D9D58 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				29473E952E5B7F64009D9D58 /* PadelCast */,
+				29473EAA2E5B81D6009D9D58 /* PadelCast Watch App Watch App */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		29473E942E5B7F64009D9D58 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29473EA12E5B7F66009D9D58 /* Preview Assets.xcassets in Resources */,
+				29473E9E2E5B7F66009D9D58 /* Assets.xcassets in Resources */,
+				29473EDE2E5B8FE5009D9D58 /* Shared in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29473EA92E5B81D6009D9D58 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29473EB52E5B81DA009D9D58 /* Preview Assets.xcassets in Resources */,
+				29473EB22E5B81DA009D9D58 /* Assets.xcassets in Resources */,
+				29473EDF2E5B8FE5009D9D58 /* Shared in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		29473E922E5B7F64009D9D58 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29473EE52E5B9269009D9D58 /* WatchConnectivityManager.swift in Sources */,
+				29473EE32E5B9254009D9D58 /* ScoreModel.swift in Sources */,
+				29473ED82E5B8CDE009D9D58 /* ExternalDisplayView.swift in Sources */,
+				29473ED42E5B8C83009D9D58 /* PadelCastApp.swift in Sources */,
+				29473EDA2E5B8CEC009D9D58 /* ScoreboardView.swift in Sources */,
+				29473ED62E5B8CB1009D9D58 /* ContentView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29473EA72E5B81D6009D9D58 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29473EE72E5B9276009D9D58 /* ScoreModel.swift in Sources */,
+				29473EE62E5B9272009D9D58 /* WatchConnectivityManager.swift in Sources */,
+				29473EB02E5B81D6009D9D58 /* ContentView.swift in Sources */,
+				29473EAE2E5B81D6009D9D58 /* PadelCast_Watch_AppApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		29473EB72E5B81DA009D9D58 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 29473EAA2E5B81D6009D9D58 /* PadelCast Watch App Watch App */;
+			targetProxy = 29473EB62E5B81DA009D9D58 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		29473EA22E5B7F66009D9D58 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		29473EA32E5B7F66009D9D58 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		29473EA52E5B7F66009D9D58 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"PadelCast/Preview Content\"";
+				DEVELOPMENT_TEAM = 78G75Z4CY4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PadelCast/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AliJassim.PadelCast;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		29473EA62E5B7F66009D9D58 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"PadelCast/Preview Content\"";
+				DEVELOPMENT_TEAM = 78G75Z4CY4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PadelCast/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AliJassim.PadelCast;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		29473EBA2E5B81DA009D9D58 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"PadelCast Watch App Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = 78G75Z4CY4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "PadelCast Watch App";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = AliJassim.PadelCast;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AliJassim.PadelCast.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		29473EBB2E5B81DA009D9D58 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"PadelCast Watch App Watch App/Preview Content\"";
+				DEVELOPMENT_TEAM = 78G75Z4CY4;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "PadelCast Watch App";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = AliJassim.PadelCast;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AliJassim.PadelCast.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		29473E912E5B7F64009D9D58 /* Build configuration list for PBXProject "PadelCast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29473EA22E5B7F66009D9D58 /* Debug */,
+				29473EA32E5B7F66009D9D58 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		29473EA42E5B7F66009D9D58 /* Build configuration list for PBXNativeTarget "PadelCast" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29473EA52E5B7F66009D9D58 /* Debug */,
+				29473EA62E5B7F66009D9D58 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		29473EB92E5B81DA009D9D58 /* Build configuration list for PBXNativeTarget "PadelCast Watch App Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29473EBA2E5B81DA009D9D58 /* Debug */,
+				29473EBB2E5B81DA009D9D58 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29473E8E2E5B7F64009D9D58 /* Project object */;
+}

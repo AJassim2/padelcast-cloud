@@ -1,0 +1,58 @@
+{
+  "" : {
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast Watch App Watch App-master.dia",
+    "emit-module-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast Watch App Watch App-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast Watch App Watch App-master-emit-module.dia",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast Watch App Watch App-master.swiftdeps"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/PadelCast/PadelCast Watch App Watch App/ContentView.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/PadelCast/PadelCast Watch App Watch App/PadelCast_Watch_AppApp.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast_Watch_AppApp.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast_Watch_AppApp.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast_Watch_AppApp.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast_Watch_AppApp.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast_Watch_AppApp.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast_Watch_AppApp.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast_Watch_AppApp.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/PadelCast_Watch_AppApp~partial.swiftmodule"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/PadelCast/Shared/ScoreModel.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ScoreModel.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ScoreModel.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ScoreModel.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ScoreModel.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ScoreModel.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ScoreModel.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ScoreModel.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/ScoreModel~partial.swiftmodule"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/PadelCast/Shared/WatchConnectivityManager.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/WatchConnectivityManager.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/WatchConnectivityManager.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/WatchConnectivityManager.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/WatchConnectivityManager.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/WatchConnectivityManager.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/WatchConnectivityManager.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/WatchConnectivityManager.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-watchos/PadelCast Watch App Watch App.build/Objects-normal/arm64/WatchConnectivityManager~partial.swiftmodule"
+  }
+}

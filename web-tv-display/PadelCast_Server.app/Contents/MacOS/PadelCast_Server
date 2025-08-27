@@ -1,0 +1,144 @@
+#!/bin/bash
+
+# PadelCast Server Launcher
+# This script starts the web server with a simple GUI
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APP_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
+
+# Change to the web server directory
+cd "$APP_DIR"
+
+# Check if virtual environment exists
+if [ ! -d "/Users/alijassim/Documents/Codes/venv" ]; then
+    osascript -e 'display alert "PadelCast Server" message "Virtual environment not found. Please run the installer first." buttons {"OK"} default button "OK"'
+    exit 1
+fi
+
+# Function to show server status
+show_status() {
+    local status="$1"
+    local message="$2"
+    
+    osascript -e "
+    tell application \"System Events\"
+        display notification \"$message\" with title \"PadelCast Server\" subtitle \"$status\"
+    end tell
+    "
+}
+
+# Function to start server
+start_server() {
+    show_status "Starting..." "Initializing web server..."
+    
+    # Activate virtual environment and start server
+    source /Users/alijassim/Documents/Codes/venv/bin/activate
+    
+    # Start the server in background
+    python3 app.py > /tmp/padelcast_server.log 2>&1 &
+    SERVER_PID=$!
+    
+    # Save PID to file for later use
+    echo $SERVER_PID > /tmp/padelcast_server.pid
+    
+    # Wait a moment for server to start
+    sleep 3
+    
+    # Check if server started successfully
+    if curl -s http://localhost:8080 > /dev/null 2>&1; then
+        show_status "Running" "Server started successfully!\n\nWeb Interface: http://192.168.100.180:8080\n\nClick OK to open in browser."
+        
+        # Ask user if they want to open the web interface
+        response=$(osascript -e 'display dialog "PadelCast Server is running!\n\nWeb Interface: http://192.168.100.180:8080\n\nWould you like to open it in your browser?" buttons {"Open Browser", "OK"} default button "Open Browser"')
+        
+        if [[ "$response" == *"Open Browser"* ]]; then
+            open "http://192.168.100.180:8080"
+        fi
+        
+        # Keep the script running to maintain the server
+        wait $SERVER_PID
+    else
+        show_status "Error" "Failed to start server. Check logs for details."
+        exit 1
+    fi
+}
+
+# Function to stop server
+stop_server() {
+    if [ -f "/tmp/padelcast_server.pid" ]; then
+        PID=$(cat /tmp/padelcast_server.pid)
+        if kill -0 $PID 2>/dev/null; then
+            kill $PID
+            rm -f /tmp/padelcast_server.pid
+            show_status "Stopped" "Server has been stopped."
+        else
+            show_status "Not Running" "Server is not currently running."
+        fi
+    else
+        show_status "Not Running" "Server is not currently running."
+    fi
+}
+
+# Function to check server status
+check_status() {
+    if [ -f "/tmp/padelcast_server.pid" ]; then
+        PID=$(cat /tmp/padelcast_server.pid)
+        if kill -0 $PID 2>/dev/null; then
+            if curl -s http://localhost:8080 > /dev/null 2>&1; then
+                show_status "Running" "Server is running on http://192.168.100.180:8080"
+            else
+                show_status "Error" "Server process exists but not responding"
+            fi
+        else
+            show_status "Not Running" "Server is not running"
+        fi
+    else
+        show_status "Not Running" "Server is not running"
+    fi
+}
+
+# Main menu
+while true; do
+    choice=$(osascript -e '
+    tell application "System Events"
+        set theChoice to choose from list {"Start Server", "Stop Server", "Check Status", "Open Web Interface", "Quit"} with title "PadelCast Server" with prompt "Choose an action:" default items {"Start Server"}
+        if theChoice is false then
+            return "Quit"
+        else
+            return item 1 of theChoice
+        end if
+    end tell
+    ')
+    
+    case "$choice" in
+        "Start Server")
+            start_server
+            ;;
+        "Stop Server")
+            stop_server
+            ;;
+        "Check Status")
+            check_status
+            ;;
+        "Open Web Interface")
+            open "http://192.168.100.180:8080"
+            ;;
+        "Quit")
+            # Ask if user wants to stop server before quitting
+            if [ -f "/tmp/padelcast_server.pid" ]; then
+                PID=$(cat /tmp/padelcast_server.pid)
+                if kill -0 $PID 2>/dev/null; then
+                    response=$(osascript -e 'display dialog "Do you want to stop the server before quitting?" buttons {"Stop & Quit", "Quit Only"} default button "Stop & Quit"')
+                    if [[ "$response" == *"Stop & Quit"* ]]; then
+                        stop_server
+                    fi
+                fi
+            fi
+            exit 0
+            ;;
+        *)
+            exit 0
+            ;;
+    esac
+done

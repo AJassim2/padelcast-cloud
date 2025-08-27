@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PadelCast TV - {{ code }}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+            min-height: 100vh;
+            color: white;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+        }
+        
+        .scoreboard-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.7);
+        }
+        
+        /* Header Section */
+        .header {
+            background: linear-gradient(90deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            padding: 15px 30px;
+            border-bottom: 3px solid #e74c3c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tournament-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .tournament-logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .tournament-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+        
+        .match-type {
+            font-size: 1.2rem;
+            color: #bdc3c7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .court-info {
+            font-size: 1.4rem;
+            color: #ecf0f1;
+            font-weight: bold;
+        }
+        
+        /* Main Scoreboard */
+        .main-scoreboard {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 40px;
+        }
+        
+        .scoreboard-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ecf0f1;
+            border-bottom: 2px solid #e74c3c;
+        }
+        
+        .scoreboard-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .scoreboard-row:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .scoreboard-row:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+        
+        /* Player Information */
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .player-flag {
+            width: 40px;
+            height: 30px;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .player-name {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ecf0f1;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        /* Score Columns */
+        .score-column {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ecf0f1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .current-points {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+        }
+        
+        .games-column {
+            background: rgba(52, 152, 219, 0.2);
+            border: 2px solid #3498db;
+        }
+        
+        .sets-column {
+            background: rgba(155, 89, 182, 0.2);
+            border: 2px solid #9b59b6;
+        }
+        
+        /* Match Status */
+        .match-status {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            border-top: 3px solid #e74c3c;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-message {
+            font-size: 1.3rem;
+            color: #ecf0f1;
+            font-weight: bold;
+        }
+        
+        .winner-announcement {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            animation: winnerPulse 2s infinite;
+        }
+        
+        @keyframes winnerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .match-info {
+            display: flex;
+            gap: 30px;
+            font-size: 1rem;
+            color: #bdc3c7;
+        }
+        
+        /* Connection Status */
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+
+        
+        .connected {
+            color: #27ae60;
+            border-color: #27ae60;
+        }
+        
+        .disconnected {
+            color: #e74c3c;
+            border-color: #e74c3c;
+        }
+        
+        /* Loading */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-size: 2rem;
+            color: #ecf0f1;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #e74c3c;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-right: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Score Update Animation */
+        .score-update {
+            animation: scoreFlash 0.5s ease-in-out;
+        }
+        
+        @keyframes scoreFlash {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); background: rgba(255, 255, 255, 0.3); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .player-name {
+                font-size: 1.5rem;
+            }
+            
+            .score-column {
+                font-size: 2rem;
+            }
+            
+            .tournament-name {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .scoreboard-header,
+            .scoreboard-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .player-info {
+                justify-content: center;
+            }
+            
+            .score-column {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <span>Connecting to match...</span>
+    </div>
+    
+
+    
+    <div class="connection-status" id="connectionStatus">
+        <span id="statusText">Connecting...</span>
+    </div>
+    
+    <div class="scoreboard-container" id="scoreboardContainer" style="display: none;">
+        <!-- Header -->
+        <div class="header">
+            <div class="tournament-info">
+                <div class="tournament-logo">🎾</div>
+                <div>
+                    <div class="tournament-name">PADELCAST CHAMPIONSHIP</div>
+                    <div class="match-type">Doubles Match</div>
+                </div>
+            </div>
+            <div class="court-info">COURT {{ code }}</div>
+        </div>
+        
+        <!-- Main Scoreboard -->
+        <div class="main-scoreboard">
+            <div class="scoreboard-header">
+                <div>TEAMS</div>
+                <div>POINTS</div>
+                <div>GAMES</div>
+                <div>SET 1</div>
+                <div>SET 2</div>
+                <div>SET 3</div>
+                <div>SET 4</div>
+                <div>SET 5</div>
+            </div>
+            
+            <div class="scoreboard-row" id="team1Row">
+                <div class="player-info">
+                    <div class="player-flag">T1</div>
+                    <div class="player-name" id="team1Name">{{ team1_name }}</div>
+                </div>
+                <div class="score-column current-points" id="team1GameScore">0</div>
+                <div class="score-column games-column" id="team1Games">0</div>
+                <div class="score-column sets-column" id="team1Set1">-</div>
+                <div class="score-column sets-column" id="team1Set2">-</div>
+                <div class="score-column sets-column" id="team1Set3">-</div>
+                <div class="score-column sets-column" id="team1Set4">-</div>
+                <div class="score-column sets-column" id="team1Set5">-</div>
+            </div>
+            
+            <div class="scoreboard-row" id="team2Row">
+                <div class="player-info">
+                    <div class="player-flag">T2</div>
+                    <div class="player-name" id="team2Name">{{ team2_name }}</div>
+                </div>
+                <div class="score-column current-points" id="team2GameScore">0</div>
+                <div class="score-column games-column" id="team2Games">0</div>
+                <div class="score-column sets-column" id="team2Set1">-</div>
+                <div class="score-column sets-column" id="team2Set2">-</div>
+                <div class="score-column sets-column" id="team2Set3">-</div>
+                <div class="score-column sets-column" id="team2Set4">-</div>
+                <div class="score-column sets-column" id="team2Set5">-</div>
+            </div>
+        </div>
+        
+        <!-- Match Status -->
+        <div class="match-status">
+            <div class="status-message" id="statusMessage">Match in progress...</div>
+            <div class="match-info">
+                <span>Last updated: <span id="lastUpdated">-</span></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const code = '{{ code }}';
+        const socket = io();
+        
+        // Connection status
+        const connectionStatus = document.getElementById('connectionStatus');
+        const statusText = document.getElementById('statusText');
+        
+        socket.on('connect', function() {
+            statusText.textContent = 'Connected';
+            connectionStatus.className = 'connection-status connected';
+            socket.emit('join', { code: code });
+        });
+        
+        socket.on('disconnect', function() {
+            statusText.textContent = 'Disconnected';
+            connectionStatus.className = 'connection-status disconnected';
+        });
+        
+        // Handle match updates
+        socket.on('match_update', function(data) {
+            updateDisplay(data);
+        });
+        
+        function updateDisplay(data) {
+            // Hide loading and show scoreboard
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('scoreboardContainer').style.display = 'flex';
+            
+            // Update team names
+            document.getElementById('team1Name').textContent = data.team1_name;
+            document.getElementById('team2Name').textContent = data.team2_name;
+            
+            // Update scores with animation
+            updateScore('team1GameScore', data.team1_game_score);
+            updateScore('team2GameScore', data.team2_game_score);
+            updateScore('team1Games', data.team1_games);
+            updateScore('team2Games', data.team2_games);
+            
+            // Update individual set scores
+            if (data.team1_set_scores && data.team2_set_scores) {
+                for (let i = 1; i <= 5; i++) {
+                    updateScore(`team1Set${i}`, data.team1_set_scores[i-1] || '-');
+                    updateScore(`team2Set${i}`, data.team2_set_scores[i-1] || '-');
+                }
+            }
+            
+            // Update match status
+            const statusMessage = document.getElementById('statusMessage');
+            
+            if (data.is_match_finished) {
+                if (data.winning_team) {
+                    const winnerName = data.winning_team === 1 ? data.team1_name : data.team2_name;
+                    statusMessage.innerHTML = `<div class="winner-announcement">🏆 WINNER: ${winnerName}</div>`;
+                } else {
+                    statusMessage.textContent = 'Match finished';
+                }
+            } else {
+                statusMessage.textContent = 'Match in progress...';
+            }
+            
+            // Update last updated time
+            const lastUpdated = new Date(data.last_updated);
+            document.getElementById('lastUpdated').textContent = lastUpdated.toLocaleTimeString();
+        }
+        
+        function updateScore(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            const currentValue = element.textContent;
+            
+            if (currentValue !== newValue.toString()) {
+                element.textContent = newValue;
+                element.classList.add('score-update');
+                setTimeout(() => element.classList.remove('score-update'), 500);
+            }
+        }
+        
+        // Load initial data
+        async function loadInitialData() {
+            try {
+                const response = await fetch(`/api/match-status/${code}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateDisplay(data.match);
+                } else {
+                    console.error('Error loading match data:', data.error);
+                }
+            } catch (error) {
+                console.error('Error loading initial data:', error);
+            }
+        }
+        
+        // Load initial data when page loads
+        loadInitialData();
+        
+        // Auto-refresh every 30 seconds as backup
+        setInterval(loadInitialData, 30000);
+    </script>
+</body>
+</html>

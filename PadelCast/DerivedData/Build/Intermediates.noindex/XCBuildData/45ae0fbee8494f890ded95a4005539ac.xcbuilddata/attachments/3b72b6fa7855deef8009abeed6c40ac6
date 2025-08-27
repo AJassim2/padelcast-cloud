@@ -1,0 +1,78 @@
+{
+  "" : {
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCast-master.dia",
+    "emit-module-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCast-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCast-master-emit-module.dia",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCast-master.swiftdeps"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/ContentView.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/ExternalDisplayView.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ExternalDisplayView.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ExternalDisplayView.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ExternalDisplayView.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ExternalDisplayView.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ExternalDisplayView.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ExternalDisplayView.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ExternalDisplayView.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ExternalDisplayView~partial.swiftmodule"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/PadelCast/Shared/ScoreModel.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreModel.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreModel.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreModel.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreModel.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreModel.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreModel.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreModel.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreModel~partial.swiftmodule"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/PadelCast/Shared/WatchConnectivityManager.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/WatchConnectivityManager.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/WatchConnectivityManager.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/WatchConnectivityManager.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/WatchConnectivityManager.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/WatchConnectivityManager.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/WatchConnectivityManager.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/WatchConnectivityManager.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/WatchConnectivityManager~partial.swiftmodule"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/PadelCastApp.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCastApp.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCastApp.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCastApp.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCastApp.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCastApp.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCastApp.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCastApp.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/PadelCastApp~partial.swiftmodule"
+  },
+  "/Users/alijassim/Documents/Codes/xcode15/ScoreboardView.swift" : {
+    "const-values" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreboardView.swiftconstvalues",
+    "dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreboardView.d",
+    "diagnostics" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreboardView.dia",
+    "index-unit-output-path" : "/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreboardView.o",
+    "llvm-bc" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreboardView.bc",
+    "object" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreboardView.o",
+    "swift-dependencies" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreboardView.swiftdeps",
+    "swiftmodule" : "/Users/alijassim/Documents/Codes/xcode15/PadelCast/DerivedData/Build/Intermediates.noindex/PadelCast.build/Debug-iphoneos/PadelCast.build/Objects-normal/arm64/ScoreboardView~partial.swiftmodule"
+  }
+}

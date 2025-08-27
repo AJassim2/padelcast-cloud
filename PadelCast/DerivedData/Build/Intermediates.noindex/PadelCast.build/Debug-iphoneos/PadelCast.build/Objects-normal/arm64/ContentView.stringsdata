@@ -1,0 +1,352 @@
+{
+  "source": "/Users/alijassim/Documents/Codes/xcode15/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "End Match",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 53
+        }
+      },
+      {
+        "comment": "",
+        "key": "Stream to TV",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 61
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 54
+        }
+      },
+      {
+        "comment": "",
+        "key": "End Match",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "Are you sure you want to end this match? All progress will be lost.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 59
+        }
+      },
+      {
+        "comment": "",
+        "key": "Got it!",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 62
+        }
+      },
+      {
+        "comment": "",
+        "key": "To stream your match to TV:\n\n1️⃣ Swipe down from the top-right corner\n2️⃣ Tap the AirPlay icon (📺)\n3️⃣ Select your TV from the list\n4️⃣ Your match will appear on TV!\n\nMake sure your TV and iPhone are on the same WiFi network.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 64
+        }
+      },
+      {
+        "comment": "",
+        "key": "End Match",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 72
+        }
+      },
+      {
+        "comment": "",
+        "key": "← Setup",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "← Setup",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 85
+        }
+      },
+      {
+        "comment": "",
+        "key": "PADEL MATCH",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "Watch Connected",
+        "location": {
+          "startingColumn": 61,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "Watch Paired",
+        "location": {
+          "startingColumn": 81,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "Watch Disconnected",
+        "location": {
+          "startingColumn": 99,
+          "startingLine": 105
+        }
+      },
+      {
+        "comment": "",
+        "key": "🏆 MATCH FINISHED",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 128
+        }
+      },
+      {
+        "comment": "",
+        "key": "Winner: %@",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 133
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sets: %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 140
+        }
+      },
+      {
+        "comment": "",
+        "key": "Games: %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 145
+        }
+      },
+      {
+        "comment": "",
+        "key": "Best of %lld",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 150
+        }
+      },
+      {
+        "comment": "",
+        "key": "VS",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 182
+        }
+      },
+      {
+        "comment": "",
+        "key": "&",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 245
+        }
+      },
+      {
+        "comment": "",
+        "key": "CURRENT",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 259
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sets Won:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 278
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 284
+        }
+      },
+      {
+        "comment": "",
+        "key": "Games Won:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 290
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 296
+        }
+      },
+      {
+        "comment": "",
+        "key": "Point %@",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 319
+        }
+      },
+      {
+        "comment": "",
+        "key": "Point %@",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 338
+        }
+      },
+      {
+        "comment": "",
+        "key": "🎉 Match Complete!",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 354
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ Wins!",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 359
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reset Game",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 368
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reset Match",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 378
+        }
+      },
+      {
+        "comment": "",
+        "key": "Stream to TV",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 397
+        }
+      },
+      {
+        "comment": "",
+        "key": "Start Match",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 458
+        }
+      },
+      {
+        "comment": "",
+        "key": "🎾 PADEL SCORER",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 426
+        }
+      },
+      {
+        "comment": "",
+        "key": "Setup your match",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 430
+        }
+      },
+      {
+        "comment": "",
+        "key": "Team Name",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 525
+        }
+      },
+      {
+        "comment": "",
+        "key": "Player 1 Name",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 529
+        }
+      },
+      {
+        "comment": "",
+        "key": "Player 2 Name",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 532
+        }
+      },
+      {
+        "comment": "",
+        "key": "Match Format",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 560
+        }
+      },
+      {
+        "comment": "",
+        "key": "Match Format",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 549
+        }
+      },
+      {
+        "comment": "",
+        "key": "Best of 3 Sets",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 561
+        }
+      },
+      {
+        "comment": "",
+        "key": "Best of 5 Sets",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 562
+        }
+      }
+    ]
+  },
+  "version": 1
+}
