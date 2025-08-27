@@ -53,6 +53,16 @@
             font-weight: bold;
             color: #e74c3c;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .court-logo-image {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
         }
         
         .tournament-name {
@@ -343,10 +353,15 @@
         <!-- Header -->
         <div class="header">
             <div class="tournament-info">
+                {% if court_logo_data %}
+                <div class="tournament-logo">
+                    <img src="data:image/png;base64,{{ court_logo_data }}" alt="Court Logo" class="court-logo-image">
+                </div>
+                {% else %}
                 <div class="tournament-logo">🎾</div>
+                {% endif %}
                 <div>
-                    <div class="tournament-name">PADELCAST CHAMPIONSHIP</div>
-                    <div class="match-type">Doubles Match</div>
+                    <div class="tournament-name">{{ championship_name }}</div>
                 </div>
             </div>
         </div>
