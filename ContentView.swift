@@ -364,6 +364,7 @@ struct ContentView: View {
     @State private var tvCode = ""
     @State private var showingTVCodeAlert = false
     @State private var tvCodeAlertMessage = ""
+    @State private var showingBestOfConfig = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -423,6 +424,9 @@ struct ContentView: View {
             TVCodeInputView(tvCode: $tvCode, onCodeSaved: {
                 fetchMatchDataFromWebServer()
             })
+        }
+        .sheet(isPresented: $showingBestOfConfig) {
+            BestOfConfigView(game: game)
         }
 
     }
@@ -606,6 +610,15 @@ struct ContentView: View {
                 .padding(.vertical, 8)
                 .background(Color.red.opacity(0.1))
                 .foregroundColor(.red)
+                .cornerRadius(8)
+                
+                Button("Best of \(game.bestOfSets)") {
+                    showingBestOfConfig = true
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(Color.blue.opacity(0.1))
+                .foregroundColor(.blue)
                 .cornerRadius(8)
                 
                 Spacer()
@@ -1376,11 +1389,13 @@ struct TVCodeInputView: View {
                 VStack(spacing: 12) {
                     if useCloud {
                         Button(action: {
+                            tvCode = tempCode
                             // Save cloud configuration to UserDefaults
                             UserDefaults.standard.set(cloudURL, forKey: "cloudURL")
                             UserDefaults.standard.set(team1Name, forKey: "team1Name")
                             UserDefaults.standard.set(team2Name, forKey: "team2Name")
                             UserDefaults.standard.set(true, forKey: "useCloud")
+                            UserDefaults.standard.set(tempCode, forKey: "tvCode")
                             onCodeSaved?()
                             dismiss()
                         }) {
@@ -1478,6 +1493,115 @@ struct TVCodeInputView: View {
                     showCloudAlert = true
                 }
             }
+        }
+    }
+}
+
+// MARK: - Best Of Configuration View
+struct BestOfConfigView: View {
+    @ObservedObject var game: PadelGame
+    @Environment(\.dismiss) private var dismiss
+    @State private var selectedBestOf = 3
+    @State private var customBestOf = ""
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                Text("Match Configuration")
+                    .font(.title)
+                    .fontWeight(.bold)
+                
+                VStack(alignment: .leading, spacing: 15) {
+                    Text("Best of Sets")
+                        .font(.headline)
+                    
+                    VStack(spacing: 10) {
+                        // Preset options
+                        HStack(spacing: 15) {
+                            BestOfButton(title: "Best of 3", value: 3, selected: selectedBestOf == 3) {
+                                selectedBestOf = 3
+                            }
+                            
+                            BestOfButton(title: "Best of 5", value: 5, selected: selectedBestOf == 5) {
+                                selectedBestOf = 5
+                            }
+                            
+                            BestOfButton(title: "Best of 9", value: 9, selected: selectedBestOf == 9) {
+                                selectedBestOf = 9
+                            }
+                        }
+                        
+                        // Custom option
+                        HStack {
+                            Text("Custom:")
+                                .font(.subheadline)
+                            
+                            TextField("Enter number", text: $customBestOf)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .keyboardType(.numberPad)
+                                .frame(width: 100)
+                            
+                            Button("Set") {
+                                if let value = Int(customBestOf), value > 0 {
+                                    selectedBestOf = value
+                                }
+                            }
+                            .disabled(customBestOf.isEmpty || Int(customBestOf) == nil)
+                        }
+                    }
+                }
+                
+                Spacer()
+                
+                // Action buttons
+                VStack(spacing: 15) {
+                    Button("Apply Configuration") {
+                        game.setBestOf(selectedBestOf)
+                        dismiss()
+                    }
+                    .font(.headline)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background(Color.blue)
+                    .cornerRadius(12)
+                    
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                    .foregroundColor(.secondary)
+                }
+                .padding(.horizontal, 40)
+            }
+            .padding()
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarItems(trailing: Button("Done") {
+                dismiss()
+            })
+            .onAppear {
+                selectedBestOf = game.bestOfSets
+            }
+        }
+    }
+}
+
+// MARK: - Best Of Button
+struct BestOfButton: View {
+    let title: String
+    let value: Int
+    let selected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundColor(selected ? .white : .blue)
+                .frame(maxWidth: .infinity)
+                .frame(height: 40)
+                .background(selected ? Color.blue : Color.blue.opacity(0.1))
+                .cornerRadius(8)
         }
     }
 }

@@ -39,21 +39,10 @@ def generate_match_code():
     return str(uuid.uuid4())[:6].upper()
 
 def convert_tennis_score(points):
-    """Convert point count to tennis score display"""
+    """Convert point count to simple score display (no tennis conversion)"""
     try:
         points_int = int(points)
-        if points_int == 0:
-            return "0"
-        elif points_int == 1:
-            return "15"
-        elif points_int == 2:
-            return "30"
-        elif points_int == 3:
-            return "40"
-        elif points_int == 4:
-            return "AD"  # Advantage
-        else:
-            return str(points_int)
+        return str(points_int)
     except (ValueError, TypeError):
         # If conversion fails, return the original value
         return str(points)
