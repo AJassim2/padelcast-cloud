@@ -119,6 +119,7 @@ def update_match():
     print(f"📱 Received update request from iPhone app")
     data = request.get_json()
     print(f"📱 Request data: {data}")
+    print(f"🚀 Cloud server updated at: {datetime.now()}")
     
     code = data.get('code')
     print(f"📱 Code: {code}")
