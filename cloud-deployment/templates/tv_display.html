@@ -84,7 +84,6 @@
         
         .scoreboard-header {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
             gap: 15px;
             padding: 15px 20px;
             background: rgba(255, 255, 255, 0.1);
@@ -99,7 +98,6 @@
         
         .scoreboard-row {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
             gap: 15px;
             padding: 20px;
             background: rgba(255, 255, 255, 0.05);
@@ -336,14 +334,12 @@
         
         <!-- Main Scoreboard -->
         <div class="main-scoreboard">
-            <div class="scoreboard-header">
+            <div class="scoreboard-header" id="scoreboardHeader">
                 <div>TEAMS</div>
                 <div>POINTS</div>
-                <div>SET 1</div>
-                <div>SET 2</div>
-                <div>SET 3</div>
-                <div>SET 4</div>
-                <div>SET 5</div>
+                {% for i in range(1, best_of_sets + 1) %}
+                <div>SET {{ i }}</div>
+                {% endfor %}
             </div>
             
             <div class="scoreboard-row" id="team1Row">
@@ -352,11 +348,9 @@
                     <div class="player-name" id="team1Name">{{ team1_name }}</div>
                 </div>
                 <div class="score-column current-points" id="team1GameScore">0</div>
-                <div class="score-column sets-column" id="team1Set1">0</div>
-                <div class="score-column sets-column" id="team1Set2">0</div>
-                <div class="score-column sets-column" id="team1Set3">0</div>
-                <div class="score-column sets-column" id="team1Set4">0</div>
-                <div class="score-column sets-column" id="team1Set5">0</div>
+                {% for i in range(1, best_of_sets + 1) %}
+                <div class="score-column sets-column" id="team1Set{{ i }}">0</div>
+                {% endfor %}
             </div>
             
             <div class="scoreboard-row" id="team2Row">
@@ -365,11 +359,9 @@
                     <div class="player-name" id="team2Name">{{ team2_name }}</div>
                 </div>
                 <div class="score-column current-points" id="team2GameScore">0</div>
-                <div class="score-column sets-column" id="team2Set1">0</div>
-                <div class="score-column sets-column" id="team2Set2">0</div>
-                <div class="score-column sets-column" id="team2Set3">0</div>
-                <div class="score-column sets-column" id="team2Set4">0</div>
-                <div class="score-column sets-column" id="team2Set5">0</div>
+                {% for i in range(1, best_of_sets + 1) %}
+                <div class="score-column sets-column" id="team2Set{{ i }}">0</div>
+                {% endfor %}
             </div>
         </div>
         
@@ -384,7 +376,23 @@
 
     <script>
         const code = '{{ code }}';
+        const bestOfSets = parseInt('{{ best_of_sets }}');
         const socket = io();
+        
+        // Set CSS grid template columns dynamically
+        function setGridColumns() {
+            const gridTemplateColumns = `2fr 1fr ${'1fr '.repeat(bestOfSets)}`.trim();
+            document.documentElement.style.setProperty('--grid-columns', gridTemplateColumns);
+            
+            const header = document.getElementById('scoreboardHeader');
+            const rows = document.querySelectorAll('.scoreboard-row');
+            
+            if (header) header.style.gridTemplateColumns = gridTemplateColumns;
+            rows.forEach(row => row.style.gridTemplateColumns = gridTemplateColumns);
+        }
+        
+        // Set grid columns when page loads
+        document.addEventListener('DOMContentLoaded', setGridColumns);
         
         // Connection status
         const connectionStatus = document.getElementById('connectionStatus');
@@ -419,17 +427,12 @@
             updateScore('team1GameScore', data.team1_game_score);
             updateScore('team2GameScore', data.team2_game_score);
             
-            // Update set scores
-            updateScore('team1Set1', data.team1_set1_games || 0);
-            updateScore('team2Set1', data.team2_set1_games || 0);
-            updateScore('team1Set2', data.team1_set2_games || 0);
-            updateScore('team2Set2', data.team2_set2_games || 0);
-            updateScore('team1Set3', data.team1_set3_games || 0);
-            updateScore('team2Set3', data.team2_set3_games || 0);
-            updateScore('team1Set4', data.team1_set4_games || 0);
-            updateScore('team2Set4', data.team2_set4_games || 0);
-            updateScore('team1Set5', data.team1_set5_games || 0);
-            updateScore('team2Set5', data.team2_set5_games || 0);
+            // Update set scores dynamically
+            const bestOfSets = data.best_of_sets || 5;
+            for (let i = 1; i <= bestOfSets; i++) {
+                updateScore(`team1Set${i}`, data[`team1_set${i}_games`] || 0);
+                updateScore(`team2Set${i}`, data[`team2_set${i}_games`] || 0);
+            }
             
             // Update match status
             const statusMessage = document.getElementById('statusMessage');
