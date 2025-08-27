@@ -394,18 +394,39 @@ struct ContentView: View {
             if let team = notification.userInfo?["team"] as? Int {
                 game.scorePoint(for: team)
                 connectivityManager.sendScoreUpdate(team: team, gameState: game)
+                
+                // Automatically sync with cloud server when watch updates score
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    sendUpdateToWebServer()
+                }
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .watchResetGame)) { _ in
             game.resetGame()
             connectivityManager.sendGameState(game)
+            
+            // Automatically sync with cloud server when watch resets game
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                sendUpdateToWebServer()
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: .watchResetMatch)) { _ in
             game.resetMatch()
             connectivityManager.sendGameState(game)
+            
+            // Automatically sync with cloud server when watch resets match
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                sendUpdateToWebServer()
+            }
         }
                             .onReceive(NotificationCenter.default.publisher(for: .watchRequestGameState)) { _ in
             connectivityManager.sendGameState(game)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .watchGameStateUpdated)) { _ in
+            // Automatically sync with cloud server when watch sends complete game state
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                sendUpdateToWebServer()
+            }
         }
 
 

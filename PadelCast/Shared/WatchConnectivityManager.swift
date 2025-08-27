@@ -7,6 +7,7 @@ extension Notification.Name {
     static let watchResetGame = Notification.Name("watchResetGame")
     static let watchResetMatch = Notification.Name("watchResetMatch")
     static let watchRequestGameState = Notification.Name("watchRequestGameState")
+    static let watchGameStateUpdated = Notification.Name("watchGameStateUpdated")
 }
 
 class WatchConnectivityManager: NSObject, ObservableObject {
@@ -210,6 +211,8 @@ class WatchConnectivityManager: NSObject, ObservableObject {
             DispatchQueue.main.async {
                 self.gameData = message
             }
+            // Notify that game state was updated from watch
+            NotificationCenter.default.post(name: .watchGameStateUpdated, object: nil, userInfo: message)
             return ["success": true, "action": action]
         default:
             print("Unknown action: \(action)")
