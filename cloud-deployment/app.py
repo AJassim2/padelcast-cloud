@@ -15,10 +15,14 @@ active_matches = {}
 match_codes = {}  # code -> match_id mapping
 
 class Match:
-    def __init__(self, match_id, team1_name, team2_name, best_of_sets=5, court_number="1", championship_name="PADELCAST CHAMPIONSHIP", court_logo_data=None):
+    def __init__(self, match_id, team1_name, team2_name, best_of_sets=5, court_number="1", championship_name="PADELCAST CHAMPIONSHIP", court_logo_data=None, team1_player1="Player 1", team1_player2="Player 2", team2_player1="Player 3", team2_player2="Player 4"):
         self.match_id = match_id
         self.team1_name = team1_name
         self.team2_name = team2_name
+        self.team1_player1 = team1_player1
+        self.team1_player2 = team1_player2
+        self.team2_player1 = team2_player1
+        self.team2_player2 = team2_player2
         self.team1_game_score = "0"
         self.team2_game_score = "0"
         self.best_of_sets = best_of_sets
@@ -86,13 +90,17 @@ def generate_code():
     court_number = data.get('court_number', '1')  # Default to 1 if not provided
     championship_name = data.get('championship_name', 'PADELCAST CHAMPIONSHIP')  # Default championship name
     court_logo_data = data.get('court_logo_data')  # Optional court logo data
+    team1_player1 = data.get('team1_player1', 'Player 1')
+    team1_player2 = data.get('team1_player2', 'Player 2')
+    team2_player1 = data.get('team2_player1', 'Player 3')
+    team2_player2 = data.get('team2_player2', 'Player 4')
     
     # Generate unique match ID and code
     match_id = str(uuid.uuid4())
     code = generate_match_code()
     
     # Create new match with all parameters
-    match = Match(match_id, team1_name, team2_name, best_of_sets, court_number, championship_name, court_logo_data)
+    match = Match(match_id, team1_name, team2_name, best_of_sets, court_number, championship_name, court_logo_data, team1_player1, team1_player2, team2_player1, team2_player2)
     active_matches[match_id] = match
     match_codes[code] = match_id
     
@@ -121,6 +129,10 @@ def tv_display(code):
                          match=match,
                          team1_name=match.team1_name,
                          team2_name=match.team2_name,
+                         team1_player1=match.team1_player1,
+                         team1_player2=match.team1_player2,
+                         team2_player1=match.team2_player1,
+                         team2_player2=match.team2_player2,
                          best_of_sets=match.best_of_sets,
                          court_number=match.court_number,
                          championship_name=match.championship_name,
