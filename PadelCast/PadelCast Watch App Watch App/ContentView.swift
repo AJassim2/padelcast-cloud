@@ -29,11 +29,11 @@ struct ContentView: View {
                         // Current scores - simplified
                         scoreSection
                         
-                        // Scoring buttons - more prominent
-                        scoringButtons
+                        // Add Point buttons
+                        addPointButtons
                         
-                        // Reset buttons
-                        resetButtons
+                        // Remove Point buttons
+                        removePointButtons
                     }
                     
                     // Connectivity status
@@ -162,15 +162,15 @@ struct ContentView: View {
         }
     }
     
-    // MARK: - Scoring Buttons (More Prominent)
-    private var scoringButtons: some View {
+    // MARK: - Add Point Buttons
+    private var addPointButtons: some View {
         VStack(spacing: 12) {
             Text("Add Point")
                 .font(.caption)
                 .foregroundColor(.secondary)
             
             HStack(spacing: 16) {
-                // Team 1 Score Button
+                // Team 1 Add Point Button
                 Button(action: {
                     print("🎾 Watch: Team 1 scored a point!")
                     connectivityManager.sendScorePoint(team: 1)
@@ -193,7 +193,7 @@ struct ContentView: View {
                     .cornerRadius(12)
                 }
                 
-                // Team 2 Score Button
+                // Team 2 Add Point Button
                 Button(action: {
                     print("🎾 Watch: Team 2 scored a point!")
                     connectivityManager.sendScorePoint(team: 2)
@@ -219,20 +219,60 @@ struct ContentView: View {
         }
     }
     
-    // MARK: - Reset Buttons
-    private var resetButtons: some View {
-        HStack(spacing: 12) {
-            Button("Reset Game") {
-                connectivityManager.sendResetGame()
-            }
-            .buttonStyle(.bordered)
-            .font(.caption)
+    // MARK: - Remove Point Buttons
+    private var removePointButtons: some View {
+        VStack(spacing: 12) {
+            Text("Remove Point")
+                .font(.caption)
+                .foregroundColor(.secondary)
             
-            Button("Reset Match") {
-                connectivityManager.sendResetMatch()
+            HStack(spacing: 16) {
+                // Team 1 Remove Point Button
+                Button(action: {
+                    print("🎾 Watch: Team 1 point removed!")
+                    connectivityManager.sendRemovePoint(team: 1)
+                }) {
+                    VStack(spacing: 6) {
+                        Image(systemName: "minus.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.white)
+                        
+                        Text(team1Name)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 60)
+                    .background(Color.blue.opacity(0.7))
+                    .cornerRadius(12)
+                }
+                
+                // Team 2 Remove Point Button
+                Button(action: {
+                    print("🎾 Watch: Team 2 point removed!")
+                    connectivityManager.sendRemovePoint(team: 2)
+                }) {
+                    VStack(spacing: 6) {
+                        Image(systemName: "minus.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.white)
+                        
+                        Text(team2Name)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 60)
+                    .background(Color.red.opacity(0.7))
+                    .cornerRadius(12)
+                }
             }
-            .buttonStyle(.bordered)
-            .font(.caption)
         }
     }
     
@@ -248,11 +288,6 @@ struct ContentView: View {
                     .font(.subheadline)
                     .foregroundColor(.blue)
             }
-            
-            Button("New Match") {
-                connectivityManager.sendResetMatch()
-            }
-            .buttonStyle(.borderedProminent)
         }
         .padding()
         .background(Color.green.opacity(0.1))

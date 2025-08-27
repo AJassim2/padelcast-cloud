@@ -401,6 +401,17 @@ struct ContentView: View {
                 }
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .watchRemovePoint)) { notification in
+            if let team = notification.userInfo?["team"] as? Int {
+                game.subtractPoint(for: team)
+                connectivityManager.sendScoreUpdate(team: team, gameState: game)
+                
+                // Automatically sync with cloud server when watch removes point
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    sendUpdateToWebServer()
+                }
+            }
+        }
         .onReceive(NotificationCenter.default.publisher(for: .watchResetGame)) { _ in
             game.resetGame()
             connectivityManager.sendGameState(game)

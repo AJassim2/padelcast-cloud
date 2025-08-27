@@ -4,6 +4,7 @@ import WatchConnectivity
 // Notification extensions for Watch communication
 extension Notification.Name {
     static let watchScorePoint = Notification.Name("watchScorePoint")
+    static let watchRemovePoint = Notification.Name("watchRemovePoint")
     static let watchResetGame = Notification.Name("watchResetGame")
     static let watchResetMatch = Notification.Name("watchResetMatch")
     static let watchRequestGameState = Notification.Name("watchRequestGameState")
@@ -156,6 +157,17 @@ class WatchConnectivityManager: NSObject, ObservableObject {
         }
     }
     
+    func sendRemovePoint(team: Int) {
+        guard WCSession.default.isReachable else { 
+            print("iPhone not reachable - cannot send remove point")
+            return 
+        }
+        
+        WCSession.default.sendMessage(["action": "removePoint", "team": team], replyHandler: nil) { error in
+            print("Error sending remove point: \(error.localizedDescription)")
+        }
+    }
+    
     func sendResetGame() {
         guard WCSession.default.isReachable else { return }
         
@@ -193,6 +205,12 @@ class WatchConnectivityManager: NSObject, ObservableObject {
                 print("Watch scored point for team \(team)")
                 NotificationCenter.default.post(name: .watchScorePoint, object: nil, userInfo: ["team": team])
                 return ["success": true, "action": "scorePoint", "team": team]
+            }
+        case "removePoint":
+            if let team = message["team"] as? Int {
+                print("Watch removed point for team \(team)")
+                NotificationCenter.default.post(name: .watchRemovePoint, object: nil, userInfo: ["team": team])
+                return ["success": true, "action": "removePoint", "team": team]
             }
         case "resetMatch":
             print("Watch requested match reset")
