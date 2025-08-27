@@ -152,19 +152,24 @@ def update_match():
         print(f"🔄 Match reset - cleared set scores")
     elif match.team1_sets > 0 or match.team2_sets > 0:
         # Update set scores based on current set
-        total_sets_played = match.team1_sets + match.team2_sets
+        total_sets_played = max(match.team1_sets, match.team2_sets)
         
-        for set_num in range(1, min(total_sets_played + 1, 6)):
-            if set_num <= len(match.team1_set_scores):
-                # For completed sets, show realistic scores
-                if set_num <= match.team1_sets:
+        # Update completed sets
+        for set_num in range(total_sets_played):
+            if set_num < len(match.team1_set_scores):
+                if set_num < match.team1_sets:
                     # Team 1 won this set
-                    match.team1_set_scores[set_num - 1] = "6"
-                    match.team2_set_scores[set_num - 1] = "0"
-                elif set_num <= total_sets_played:
-                    # Team 2 won this set (since Team 1 didn't win it)
-                    match.team1_set_scores[set_num - 1] = "0"
-                    match.team2_set_scores[set_num - 1] = "6"
+                    match.team1_set_scores[set_num] = "6"
+                    match.team2_set_scores[set_num] = "0"
+                elif set_num < match.team2_sets:
+                    # Team 2 won this set
+                    match.team1_set_scores[set_num] = "0"
+                    match.team2_set_scores[set_num] = "6"
+        
+        # Update current set score (showing current game scores as set points)
+        if total_sets_played < len(match.team1_set_scores):
+            match.team1_set_scores[total_sets_played] = str(match.team1_game_score)
+            match.team2_set_scores[total_sets_played] = str(match.team2_game_score)
         
         print(f"🎾 Updated set scores - Team 1: {match.team1_set_scores}, Team 2: {match.team2_set_scores}")
     

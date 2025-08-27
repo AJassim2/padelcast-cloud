@@ -38,50 +38,34 @@ class PadelGame: ObservableObject {
     
     // MARK: - Scoring Methods
     
-    func scorePoint(for team: Int) {
+        func scorePoint(for team: Int) {
         guard !isMatchFinished else { return }
-        
-        // Simplified scoring: each point = 1 game won
+
+        // Simplified scoring: each point = 1 set point
         if team == 1 {
             team1GameScore += 1
         } else {
             team2GameScore += 1
         }
-        
-        // Check if this point wins the game
-        checkGameWin()
-    }
-    
-    private func checkGameWin() {
-        // Simplified: first to 4 points wins the game
-        if team1GameScore >= 4 && team1GameScore - team2GameScore >= 2 {
-            winGame(for: 1)
-        } else if team2GameScore >= 4 && team2GameScore - team1GameScore >= 2 {
-            winGame(for: 2)
-        }
-    }
-    
-    private func winGame(for team: Int) {
-        if team == 1 {
-            team1Games += 1
-        } else {
-            team2Games += 1
-        }
-        
-        // Reset game score
-        team1GameScore = 0
-        team2GameScore = 0
-        isDeuce = false
-        advantageTeam = nil
-        
+
+        // Check if this point wins the set
         checkSetWin()
+    }
+
+    private func checkSetWin() {
+        // First to 6 points wins the set
+        if team1GameScore >= 6 && team1GameScore - team2GameScore >= 2 {
+            winSet(for: 1)
+        } else if team2GameScore >= 6 && team2GameScore - team1GameScore >= 2 {
+            winSet(for: 2)
+        }
     }
     
     private func checkSetWin() {
-        // First to 6 games wins the set
-        if team1Games >= 6 && team1Games - team2Games >= 2 {
+        // First to 6 points wins the set
+        if team1GameScore >= 6 && team1GameScore - team2GameScore >= 2 {
             winSet(for: 1)
-        } else if team2Games >= 6 && team2Games - team1Games >= 2 {
+        } else if team2GameScore >= 6 && team2GameScore - team1GameScore >= 2 {
             winSet(for: 2)
         }
     }
@@ -93,9 +77,9 @@ class PadelGame: ObservableObject {
             team2Sets += 1
         }
         
-        // Reset games
-        team1Games = 0
-        team2Games = 0
+        // Reset game scores for next set
+        team1GameScore = 0
+        team2GameScore = 0
         
         checkMatchWin()
     }
@@ -119,8 +103,6 @@ class PadelGame: ObservableObject {
         team2GameScore = 0
         team1Sets = 0
         team2Sets = 0
-        team1Games = 0
-        team2Games = 0
         isMatchFinished = false
         winningTeam = nil
         isDeuce = false
@@ -151,7 +133,7 @@ class PadelGame: ObservableObject {
     }
     
     var currentSetScore: String {
-        return "\(team1Games) - \(team2Games)"
+        return "\(team1GameScore) - \(team2GameScore)"
     }
     
     var matchScore: String {
