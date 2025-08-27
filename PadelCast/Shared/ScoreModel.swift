@@ -138,7 +138,16 @@ class PadelGame: ObservableObject {
     
     func displayGameScore(for team: Int) -> String {
         let score = team == 1 ? team1GameScore : team2GameScore
-        return "\(score)"
+        
+        // Traditional tennis scoring: 0, 15, 30, 40
+        switch score {
+        case 0: return "0"
+        case 1: return "15"
+        case 2: return "30"
+        case 3: return "40"
+        case 4: return "AD"  // Advantage
+        default: return "\(score)"
+        }
     }
     
     var currentSetScore: String {
