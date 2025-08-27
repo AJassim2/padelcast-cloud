@@ -26,9 +26,6 @@ struct ContentView: View {
                     if isMatchFinished {
                         matchFinishedSection
                     } else {
-                        // Current scores - simplified
-                        scoreSection
-                        
                         // Add Point buttons
                         addPointButtons
                         
@@ -60,105 +57,6 @@ struct ContentView: View {
             Text("Watch Controller")
                 .font(.caption)
                 .foregroundColor(.secondary)
-        }
-    }
-    
-    // MARK: - Score Section (Simplified)
-    private var scoreSection: some View {
-        VStack(spacing: 12) {
-            // Team 1 Score
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(team1Name)
-                        .font(.headline)
-                        .foregroundColor(.blue)
-                    
-                    HStack(spacing: 16) {
-                        VStack(spacing: 2) {
-                            Text("Game")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Text(currentGameScore1)
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .foregroundColor(.blue)
-                        }
-                        
-                        VStack(spacing: 2) {
-                            Text("Games")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Text("\(team1Games)")
-                                .font(.title3)
-                                .foregroundColor(.blue)
-                        }
-                        
-                        VStack(spacing: 2) {
-                            Text("Sets")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Text("\(team1Sets)")
-                                .font(.title3)
-                                .foregroundColor(.blue)
-                        }
-                    }
-                }
-                
-                Spacer()
-            }
-            .padding()
-            .background(Color.blue.opacity(0.1))
-            .cornerRadius(12)
-            
-            // VS Separator
-            Text("VS")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding(.vertical, 4)
-            
-            // Team 2 Score
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(team2Name)
-                        .font(.headline)
-                        .foregroundColor(.red)
-                    
-                    HStack(spacing: 16) {
-                        VStack(spacing: 2) {
-                            Text("Game")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Text(currentGameScore2)
-                                .font(.title2)
-                                .fontWeight(.bold)
-                                .foregroundColor(.red)
-                        }
-                        
-                        VStack(spacing: 2) {
-                            Text("Games")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Text("\(team2Games)")
-                                .font(.title3)
-                                .foregroundColor(.red)
-                        }
-                        
-                        VStack(spacing: 2) {
-                            Text("Sets")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Text("\(team2Sets)")
-                                .font(.title3)
-                                .foregroundColor(.red)
-                        }
-                    }
-                }
-                
-                Spacer()
-            }
-            .padding()
-            .background(Color.red.opacity(0.1))
-            .cornerRadius(12)
         }
     }
     
