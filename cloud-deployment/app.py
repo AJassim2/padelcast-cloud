@@ -90,7 +90,7 @@ def generate_code():
     active_matches[match_id] = match
     match_codes[code] = match_id
     
-    print(f"Generated code {code} for match {match_id} with Best of {best_of_sets} sets")
+    print(f"🚀 Generated code {code} for match {match_id} with Best of {best_of_sets} sets - Cloud updated at {datetime.now()}")
     
     return jsonify({
         'success': True,
