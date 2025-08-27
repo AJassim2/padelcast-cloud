@@ -84,7 +84,7 @@
         
         .scoreboard-header {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
             gap: 15px;
             padding: 15px 20px;
             background: rgba(255, 255, 255, 0.1);
@@ -99,7 +99,7 @@
         
         .scoreboard-row {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
             gap: 15px;
             padding: 20px;
             background: rgba(255, 255, 255, 0.05);
@@ -352,11 +352,11 @@
                     <div class="player-name" id="team1Name">{{ team1_name }}</div>
                 </div>
                 <div class="score-column current-points" id="team1GameScore">0</div>
-                <div class="score-column sets-column" id="team1Set1">-</div>
-                <div class="score-column sets-column" id="team1Set2">-</div>
-                <div class="score-column sets-column" id="team1Set3">-</div>
-                <div class="score-column sets-column" id="team1Set4">-</div>
-                <div class="score-column sets-column" id="team1Set5">-</div>
+                <div class="score-column sets-column" id="team1Set1">0</div>
+                <div class="score-column sets-column" id="team1Set2">0</div>
+                <div class="score-column sets-column" id="team1Set3">0</div>
+                <div class="score-column sets-column" id="team1Set4">0</div>
+                <div class="score-column sets-column" id="team1Set5">0</div>
             </div>
             
             <div class="scoreboard-row" id="team2Row">
@@ -365,11 +365,11 @@
                     <div class="player-name" id="team2Name">{{ team2_name }}</div>
                 </div>
                 <div class="score-column current-points" id="team2GameScore">0</div>
-                <div class="score-column sets-column" id="team2Set1">-</div>
-                <div class="score-column sets-column" id="team2Set2">-</div>
-                <div class="score-column sets-column" id="team2Set3">-</div>
-                <div class="score-column sets-column" id="team2Set4">-</div>
-                <div class="score-column sets-column" id="team2Set5">-</div>
+                <div class="score-column sets-column" id="team2Set1">0</div>
+                <div class="score-column sets-column" id="team2Set2">0</div>
+                <div class="score-column sets-column" id="team2Set3">0</div>
+                <div class="score-column sets-column" id="team2Set4">0</div>
+                <div class="score-column sets-column" id="team2Set5">0</div>
             </div>
         </div>
         
@@ -419,13 +419,17 @@
             updateScore('team1GameScore', data.team1_game_score);
             updateScore('team2GameScore', data.team2_game_score);
             
-            // Update individual set scores
-            if (data.team1_set_scores && data.team2_set_scores) {
-                for (let i = 1; i <= 5; i++) {
-                    updateScore(`team1Set${i}`, data.team1_set_scores[i-1] || '-');
-                    updateScore(`team2Set${i}`, data.team2_set_scores[i-1] || '-');
-                }
-            }
+            // Update set scores
+            updateScore('team1Set1', data.team1_set1_games || 0);
+            updateScore('team2Set1', data.team2_set1_games || 0);
+            updateScore('team1Set2', data.team1_set2_games || 0);
+            updateScore('team2Set2', data.team2_set2_games || 0);
+            updateScore('team1Set3', data.team1_set3_games || 0);
+            updateScore('team2Set3', data.team2_set3_games || 0);
+            updateScore('team1Set4', data.team1_set4_games || 0);
+            updateScore('team2Set4', data.team2_set4_games || 0);
+            updateScore('team1Set5', data.team1_set5_games || 0);
+            updateScore('team2Set5', data.team2_set5_games || 0);
             
             // Update match status
             const statusMessage = document.getElementById('statusMessage');

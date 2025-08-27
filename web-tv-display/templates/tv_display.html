@@ -84,7 +84,7 @@
         
         .scoreboard-header {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
             gap: 15px;
             padding: 15px 20px;
             background: rgba(255, 255, 255, 0.1);
@@ -99,7 +99,7 @@
         
         .scoreboard-row {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
             gap: 15px;
             padding: 20px;
             background: rgba(255, 255, 255, 0.05);
@@ -339,8 +339,11 @@
             <div class="scoreboard-header">
                 <div>TEAMS</div>
                 <div>POINTS</div>
-                <div>GAMES</div>
-                <div>SETS</div>
+                <div>SET 1</div>
+                <div>SET 2</div>
+                <div>SET 3</div>
+                <div>SET 4</div>
+                <div>SET 5</div>
             </div>
             
             <div class="scoreboard-row" id="team1Row">
@@ -349,8 +352,11 @@
                     <div class="player-name" id="team1Name">{{ team1_name }}</div>
                 </div>
                 <div class="score-column current-points" id="team1GameScore">0</div>
-                <div class="score-column games-column" id="team1Games">0</div>
-                <div class="score-column sets-column" id="team1Sets">0</div>
+                <div class="score-column sets-column" id="team1Set1">0</div>
+                <div class="score-column sets-column" id="team1Set2">0</div>
+                <div class="score-column sets-column" id="team1Set3">0</div>
+                <div class="score-column sets-column" id="team1Set4">0</div>
+                <div class="score-column sets-column" id="team1Set5">0</div>
             </div>
             
             <div class="scoreboard-row" id="team2Row">
@@ -359,8 +365,11 @@
                     <div class="player-name" id="team2Name">{{ team2_name }}</div>
                 </div>
                 <div class="score-column current-points" id="team2GameScore">0</div>
-                <div class="score-column games-column" id="team2Games">0</div>
-                <div class="score-column sets-column" id="team2Sets">0</div>
+                <div class="score-column sets-column" id="team2Set1">0</div>
+                <div class="score-column sets-column" id="team2Set2">0</div>
+                <div class="score-column sets-column" id="team2Set3">0</div>
+                <div class="score-column sets-column" id="team2Set4">0</div>
+                <div class="score-column sets-column" id="team2Set5">0</div>
             </div>
         </div>
         
@@ -409,10 +418,18 @@
             // Update scores with animation
             updateScore('team1GameScore', data.team1_game_score);
             updateScore('team2GameScore', data.team2_game_score);
-            updateScore('team1Games', data.team1_games);
-            updateScore('team2Games', data.team2_games);
-            updateScore('team1Sets', data.team1_sets);
-            updateScore('team2Sets', data.team2_sets);
+            
+            // Update set scores
+            updateScore('team1Set1', data.team1_set1_games || 0);
+            updateScore('team2Set1', data.team2_set1_games || 0);
+            updateScore('team1Set2', data.team1_set2_games || 0);
+            updateScore('team2Set2', data.team2_set2_games || 0);
+            updateScore('team1Set3', data.team1_set3_games || 0);
+            updateScore('team2Set3', data.team2_set3_games || 0);
+            updateScore('team1Set4', data.team1_set4_games || 0);
+            updateScore('team2Set4', data.team2_set4_games || 0);
+            updateScore('team1Set5', data.team1_set5_games || 0);
+            updateScore('team2Set5', data.team2_set5_games || 0);
             
             // Update match status
             const statusMessage = document.getElementById('statusMessage');

@@ -21,11 +21,22 @@ class Match:
         self.team2_name = team2_name
         self.team1_game_score = "0"
         self.team2_game_score = "0"
-        self.team1_games = 0
-        self.team2_games = 0
-        self.team1_sets = 0
-        self.team2_sets = 0
-
+        
+        # Games won in each set
+        self.team1_set1_games = 0
+        self.team2_set1_games = 0
+        self.team1_set2_games = 0
+        self.team2_set2_games = 0
+        self.team1_set3_games = 0
+        self.team2_set3_games = 0
+        self.team1_set4_games = 0
+        self.team2_set4_games = 0
+        self.team1_set5_games = 0
+        self.team2_set5_games = 0
+        
+        # Current set being played
+        self.current_set = 1
+        
         self.is_match_finished = False
         self.winning_team = None
         self.created_at = datetime.now()
@@ -133,15 +144,20 @@ def update_match():
         match.team2_name = data.get('team2_name', match.team2_name)
     match.team1_game_score = data.get('team1_game_score', match.team1_game_score)
     match.team2_game_score = data.get('team2_game_score', match.team2_game_score)
-    match.team1_games = data.get('team1_games', match.team1_games)
-    match.team2_games = data.get('team2_games', match.team2_games)
-    match.team1_sets = data.get('team1_sets', match.team1_sets)
-    match.team2_sets = data.get('team2_sets', match.team2_sets)
+    
+    # Update set game scores
+    for i in range(1, 6):
+        set_num = f"set{i}_games"
+        if set_num in data:
+            set_games = data.get(set_num)
+            if set_games is not None:
+                setattr(match, f"team1_{set_num}", set_games[0])
+                setattr(match, f"team2_{set_num}", set_games[1])
+    
+    match.current_set = data.get('current_set', match.current_set)
     match.is_match_finished = data.get('is_match_finished', match.is_match_finished)
     match.winning_team = data.get('winning_team', match.winning_team)
     match.last_updated = datetime.now()
-    
-
     
     # Convert scores to tennis format for display
     team1_display_score = convert_tennis_score(match.team1_game_score)
@@ -156,10 +172,17 @@ def update_match():
         'team2_name': match.team2_name,
         'team1_game_score': team1_display_score,
         'team2_game_score': team2_display_score,
-        'team1_games': match.team1_games,
-        'team2_games': match.team2_games,
-        'team1_sets': match.team1_sets,
-        'team2_sets': match.team2_sets,
+        'team1_set1_games': match.team1_set1_games,
+        'team2_set1_games': match.team2_set1_games,
+        'team1_set2_games': match.team1_set2_games,
+        'team2_set2_games': match.team2_set2_games,
+        'team1_set3_games': match.team1_set3_games,
+        'team2_set3_games': match.team2_set3_games,
+        'team1_set4_games': match.team1_set4_games,
+        'team2_set4_games': match.team2_set4_games,
+        'team1_set5_games': match.team1_set5_games,
+        'team2_set5_games': match.team2_set5_games,
+        'current_set': match.current_set,
         'is_match_finished': match.is_match_finished,
         'winning_team': match.winning_team,
         'last_updated': match.last_updated.isoformat()
@@ -208,10 +231,17 @@ def match_status(code):
             'team2_name': match.team2_name,
             'team1_game_score': team1_display_score,
             'team2_game_score': team2_display_score,
-            'team1_games': match.team1_games,
-            'team2_games': match.team2_games,
-            'team1_sets': match.team1_sets,
-            'team2_sets': match.team2_sets,
+            'team1_set1_games': match.team1_set1_games,
+            'team2_set1_games': match.team2_set1_games,
+            'team1_set2_games': match.team1_set2_games,
+            'team2_set2_games': match.team2_set2_games,
+            'team1_set3_games': match.team1_set3_games,
+            'team2_set3_games': match.team2_set3_games,
+            'team1_set4_games': match.team1_set4_games,
+            'team2_set4_games': match.team2_set4_games,
+            'team1_set5_games': match.team1_set5_games,
+            'team2_set5_games': match.team2_set5_games,
+            'current_set': match.current_set,
             'is_match_finished': match.is_match_finished,
             'winning_team': match.winning_team,
             'last_updated': match.last_updated.isoformat()
