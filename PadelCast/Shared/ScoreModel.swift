@@ -61,15 +61,6 @@ class PadelGame: ObservableObject {
         }
     }
     
-    private func checkSetWin() {
-        // First to 6 points wins the set
-        if team1GameScore >= 6 && team1GameScore - team2GameScore >= 2 {
-            winSet(for: 1)
-        } else if team2GameScore >= 6 && team2GameScore - team1GameScore >= 2 {
-            winSet(for: 2)
-        }
-    }
-    
     private func winSet(for team: Int) {
         if team == 1 {
             team1Sets += 1
@@ -121,15 +112,8 @@ class PadelGame: ObservableObject {
     func displayGameScore(for team: Int) -> String {
         let score = team == 1 ? team1GameScore : team2GameScore
         
-        // Traditional tennis scoring: 0, 15, 30, 40
-        switch score {
-        case 0: return "0"
-        case 1: return "15"
-        case 2: return "30"
-        case 3: return "40"
-        case 4: return "AD"  // Advantage
-        default: return "\(score)"
-        }
+        // Display as-is (these are set points, not tennis points)
+        return "\(score)"
     }
     
     var currentSetScore: String {

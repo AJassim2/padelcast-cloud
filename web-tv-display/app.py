@@ -173,12 +173,11 @@ def update_match():
         
         print(f"🎾 Updated set scores - Team 1: {match.team1_set_scores}, Team 2: {match.team2_set_scores}")
     
-    # Convert scores to tennis format for display
-    team1_display_score = convert_tennis_score(match.team1_game_score)
-    team2_display_score = convert_tennis_score(match.team2_game_score)
+    # Display scores as-is (they are set points, not tennis points)
+    team1_display_score = str(match.team1_game_score)
+    team2_display_score = str(match.team2_game_score)
     
-    print(f"📱 Converted scores - Team 1: {match.team1_game_score} -> {team1_display_score}")
-    print(f"📱 Converted scores - Team 2: {match.team2_game_score} -> {team2_display_score}")
+    print(f"📱 Set scores - Team 1: {match.team1_game_score}, Team 2: {match.team2_game_score}")
     
     # Prepare update data
     update_data = {
@@ -229,9 +228,9 @@ def match_status(code):
     if not match:
         return jsonify({'success': False, 'error': 'Match not found'}), 404
     
-    # Convert scores to tennis format for display
-    team1_display_score = convert_tennis_score(match.team1_game_score)
-    team2_display_score = convert_tennis_score(match.team2_game_score)
+    # Display scores as-is (they are set points, not tennis points)
+    team1_display_score = str(match.team1_game_score)
+    team2_display_score = str(match.team2_game_score)
     
     return jsonify({
         'success': True,
