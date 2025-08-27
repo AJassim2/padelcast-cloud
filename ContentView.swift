@@ -364,6 +364,7 @@ struct ContentView: View {
     @State private var tvCode = ""
     @State private var showingTVCodeAlert = false
     @State private var tvCodeAlertMessage = ""
+    @State private var customBestOf = ""
 
     
     var body: some View {
@@ -976,6 +977,7 @@ struct PlayerSetupView: View {
     @EnvironmentObject var game: PadelGame
     @EnvironmentObject var connectivityManager: WatchConnectivityManager
     @State private var showingScorer = false
+    @State private var customBestOf = ""
     
     var body: some View {
         NavigationView {
@@ -1117,11 +1119,59 @@ struct PlayerSetupView: View {
                     .font(.title2)
             }
             
-            Picker("Match Format", selection: $game.bestOfSets) {
-                Text("Best of 3 Sets").tag(3)
-                Text("Best of 5 Sets").tag(5)
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Match Format")
+                    .font(.headline)
+                    .foregroundColor(.purple)
+                
+                // Preset options
+                HStack(spacing: 12) {
+                    Button("Best of 3") {
+                        game.setBestOf(3)
+                    }
+                    .buttonStyle(BestOfButtonStyle(isSelected: game.bestOfSets == 3))
+                    
+                    Button("Best of 5") {
+                        game.setBestOf(5)
+                    }
+                    .buttonStyle(BestOfButtonStyle(isSelected: game.bestOfSets == 5))
+                    
+                    Button("Best of 9") {
+                        game.setBestOf(9)
+                    }
+                    .buttonStyle(BestOfButtonStyle(isSelected: game.bestOfSets == 9))
+                }
+                
+                // Custom option
+                HStack {
+                    Text("Custom:")
+                        .font(.subheadline)
+                        .foregroundColor(.purple)
+                    
+                    TextField("Enter number", text: $customBestOf)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .keyboardType(.numberPad)
+                        .frame(width: 100)
+                    
+                    Button("Set") {
+                        if let value = Int(customBestOf), value > 0 {
+                            game.setBestOf(value)
+                        }
+                    }
+                    .disabled(customBestOf.isEmpty || Int(customBestOf) == nil)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.purple.opacity(0.1))
+                    .foregroundColor(.purple)
+                    .cornerRadius(6)
+                }
+                
+                if game.bestOfSets > 0 {
+                    Text("Selected: Best of \(game.bestOfSets)")
+                        .font(.caption)
+                        .foregroundColor(.purple)
+                }
             }
-            .pickerStyle(.segmented)
         }
         .padding(20)
         .background(Color.purple.opacity(0.1))
