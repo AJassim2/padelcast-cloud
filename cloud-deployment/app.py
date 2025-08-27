@@ -230,28 +230,27 @@ def match_status(code):
     team1_display_score = convert_tennis_score(match.team1_game_score)
     team2_display_score = convert_tennis_score(match.team2_game_score)
     
+    # Build dynamic match data
+    match_data = {
+        'team1_name': match.team1_name,
+        'team2_name': match.team2_name,
+        'team1_game_score': team1_display_score,
+        'team2_game_score': team2_display_score,
+        'current_set': match.current_set,
+        'is_match_finished': match.is_match_finished,
+        'winning_team': match.winning_team,
+        'last_updated': match.last_updated.isoformat(),
+        'best_of_sets': match.best_of_sets
+    }
+    
+    # Add dynamic set data based on best_of_sets
+    for i in range(1, match.best_of_sets + 1):
+        match_data[f'team1_set{i}_games'] = match.team1_set_games[i]
+        match_data[f'team2_set{i}_games'] = match.team2_set_games[i]
+    
     return jsonify({
         'success': True,
-        'match': {
-            'team1_name': match.team1_name,
-            'team2_name': match.team2_name,
-            'team1_game_score': team1_display_score,
-            'team2_game_score': team2_display_score,
-            'team1_set1_games': match.team1_set1_games,
-            'team2_set1_games': match.team2_set1_games,
-            'team1_set2_games': match.team1_set2_games,
-            'team2_set2_games': match.team2_set2_games,
-            'team1_set3_games': match.team1_set3_games,
-            'team2_set3_games': match.team2_set3_games,
-            'team1_set4_games': match.team1_set4_games,
-            'team2_set4_games': match.team2_set4_games,
-            'team1_set5_games': match.team1_set5_games,
-            'team2_set5_games': match.team2_set5_games,
-            'current_set': match.current_set,
-            'is_match_finished': match.is_match_finished,
-            'winning_team': match.winning_team,
-            'last_updated': match.last_updated.isoformat()
-        }
+        'match': match_data
     })
 
 # Cleanup old matches (older than 24 hours)
