@@ -25,10 +25,7 @@ class Match:
         self.team2_games = 0
         self.team1_sets = 0
         self.team2_sets = 0
-        # Individual set scores (like tennis scoreboard)
-        self.team1_set_scores = ["-", "-", "-", "-", "-"]  # Set 1-5
-        self.team2_set_scores = ["-", "-", "-", "-", "-"]  # Set 1-5
-        self.current_set = 1
+
         self.is_match_finished = False
         self.winning_team = None
         self.created_at = datetime.now()
@@ -144,34 +141,7 @@ def update_match():
     match.winning_team = data.get('winning_team', match.winning_team)
     match.last_updated = datetime.now()
     
-    # Check if match is being reset (both sets are 0 and not finished)
-    if match.team1_sets == 0 and match.team2_sets == 0 and not match.is_match_finished:
-        # Reset set scores when match is reset
-        match.team1_set_scores = ["-", "-", "-", "-", "-"]
-        match.team2_set_scores = ["-", "-", "-", "-", "-"]
-        print(f"🔄 Match reset - cleared set scores")
-    elif match.team1_sets > 0 or match.team2_sets > 0:
-        # Update set scores based on current set
-        total_sets_played = max(match.team1_sets, match.team2_sets)
-        
-        # Update completed sets
-        for set_num in range(total_sets_played):
-            if set_num < len(match.team1_set_scores):
-                if set_num < match.team1_sets:
-                    # Team 1 won this set
-                    match.team1_set_scores[set_num] = "6"
-                    match.team2_set_scores[set_num] = "0"
-                elif set_num < match.team2_sets:
-                    # Team 2 won this set
-                    match.team1_set_scores[set_num] = "0"
-                    match.team2_set_scores[set_num] = "6"
-        
-        # Update current set score (showing current game scores as set points)
-        if total_sets_played < len(match.team1_set_scores):
-            match.team1_set_scores[total_sets_played] = str(match.team1_game_score)
-            match.team2_set_scores[total_sets_played] = str(match.team2_game_score)
-        
-        print(f"🎾 Updated set scores - Team 1: {match.team1_set_scores}, Team 2: {match.team2_set_scores}")
+
     
     # Convert scores to tennis format for display
     team1_display_score = convert_tennis_score(match.team1_game_score)
@@ -190,8 +160,6 @@ def update_match():
         'team2_games': match.team2_games,
         'team1_sets': match.team1_sets,
         'team2_sets': match.team2_sets,
-        'team1_set_scores': match.team1_set_scores,
-        'team2_set_scores': match.team2_set_scores,
         'is_match_finished': match.is_match_finished,
         'winning_team': match.winning_team,
         'last_updated': match.last_updated.isoformat()
@@ -244,8 +212,6 @@ def match_status(code):
             'team2_games': match.team2_games,
             'team1_sets': match.team1_sets,
             'team2_sets': match.team2_sets,
-            'team1_set_scores': match.team1_set_scores,
-            'team2_set_scores': match.team2_set_scores,
             'is_match_finished': match.is_match_finished,
             'winning_team': match.winning_team,
             'last_updated': match.last_updated.isoformat()
