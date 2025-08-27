@@ -53,6 +53,16 @@
             font-weight: bold;
             color: #e74c3c;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .court-logo-image {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
         }
         
         .tournament-name {
@@ -72,6 +82,24 @@
             font-size: 1.4rem;
             color: #ecf0f1;
             font-weight: bold;
+        }
+        
+        /* Court Display (Center) */
+        .court-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 2px solid #e74c3c;
+        }
+        
+        .court-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
         }
         
         /* Main Scoreboard */
@@ -141,6 +169,20 @@
             font-size: 1.8rem;
             font-weight: bold;
             color: #ecf0f1;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .player-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 4px;
+        }
+        
+        .player-name-small {
+            font-size: 0.9rem;
+            font-weight: normal;
+            color: #ccc;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
         
@@ -325,13 +367,22 @@
         <!-- Header -->
         <div class="header">
             <div class="tournament-info">
+                {% if court_logo_data %}
+                <div class="tournament-logo">
+                    <img src="data:image/png;base64,{{ court_logo_data }}" alt="Court Logo" class="court-logo-image">
+                </div>
+                {% else %}
                 <div class="tournament-logo">🎾</div>
+                {% endif %}
                 <div>
-                    <div class="tournament-name">PADELCAST CHAMPIONSHIP</div>
-                    <div class="match-type">Doubles Match</div>
+                    <div class="tournament-name">{{ championship_name }}</div>
                 </div>
             </div>
-            <div class="court-info">COURT {{ code }}</div>
+        </div>
+        
+        <!-- Court Number Display (Center) -->
+        <div class="court-display">
+            <div class="court-number">COURT {{ court_number }}</div>
         </div>
         
         <!-- Main Scoreboard -->
@@ -348,6 +399,10 @@
                 <div class="player-info">
                     <div class="player-flag">T1</div>
                     <div class="player-name" id="team1Name">{{ team1_name }}</div>
+                    <div class="player-details">
+                        <div class="player-name-small" id="team1Player1">{{ team1_player1 }}</div>
+                        <div class="player-name-small" id="team1Player2">{{ team1_player2 }}</div>
+                    </div>
                 </div>
                 <div class="score-column current-points" id="team1GameScore">0</div>
                 {% for i in range(1, best_of_sets + 1) %}
@@ -359,6 +414,10 @@
                 <div class="player-info">
                     <div class="player-flag">T2</div>
                     <div class="player-name" id="team2Name">{{ team2_name }}</div>
+                    <div class="player-details">
+                        <div class="player-name-small" id="team2Player1">{{ team2_player1 }}</div>
+                        <div class="player-name-small" id="team2Player2">{{ team2_player2 }}</div>
+                    </div>
                 </div>
                 <div class="score-column current-points" id="team2GameScore">0</div>
                 {% for i in range(1, best_of_sets + 1) %}
@@ -424,6 +483,12 @@
             // Update team names
             document.getElementById('team1Name').textContent = data.team1_name;
             document.getElementById('team2Name').textContent = data.team2_name;
+            
+            // Update player names
+            if (data.team1_player1) document.getElementById('team1Player1').textContent = data.team1_player1;
+            if (data.team1_player2) document.getElementById('team1Player2').textContent = data.team1_player2;
+            if (data.team2_player1) document.getElementById('team2Player1').textContent = data.team2_player1;
+            if (data.team2_player2) document.getElementById('team2Player2').textContent = data.team2_player2;
             
             // Update scores with animation
             updateScore('team1GameScore', data.team1_game_score);

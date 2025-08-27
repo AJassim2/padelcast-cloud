@@ -15,13 +15,20 @@ active_matches = {}
 match_codes = {}  # code -> match_id mapping
 
 class Match:
-    def __init__(self, match_id, team1_name, team2_name, best_of_sets=5):
+    def __init__(self, match_id, team1_name, team2_name, best_of_sets=5, court_number="1", championship_name="PADELCAST CHAMPIONSHIP", court_logo_data=None, team1_player1="Player 1", team1_player2="Player 2", team2_player1="Player 3", team2_player2="Player 4"):
         self.match_id = match_id
         self.team1_name = team1_name
         self.team2_name = team2_name
+        self.team1_player1 = team1_player1
+        self.team1_player2 = team1_player2
+        self.team2_player1 = team2_player1
+        self.team2_player2 = team2_player2
         self.team1_game_score = "0"
         self.team2_game_score = "0"
         self.best_of_sets = best_of_sets
+        self.court_number = court_number
+        self.championship_name = championship_name
+        self.court_logo_data = court_logo_data
         
         # Initialize dynamic set game counters
         self.team1_set_games = {}
@@ -80,17 +87,24 @@ def generate_code():
     team1_name = data.get('team1_name', 'Team 1')
     team2_name = data.get('team2_name', 'Team 2')
     best_of_sets = data.get('best_of_sets', 5)  # Default to 5 if not provided
+    court_number = data.get('court_number', '1')  # Default to 1 if not provided
+    championship_name = data.get('championship_name', 'PADELCAST CHAMPIONSHIP')  # Default championship name
+    court_logo_data = data.get('court_logo_data')  # Optional court logo data
+    team1_player1 = data.get('team1_player1', 'Player 1')
+    team1_player2 = data.get('team1_player2', 'Player 2')
+    team2_player1 = data.get('team2_player1', 'Player 3')
+    team2_player2 = data.get('team2_player2', 'Player 4')
     
     # Generate unique match ID and code
     match_id = str(uuid.uuid4())
     code = generate_match_code()
     
-    # Create new match with best_of_sets
-    match = Match(match_id, team1_name, team2_name, best_of_sets)
+    # Create new match with all parameters
+    match = Match(match_id, team1_name, team2_name, best_of_sets, court_number, championship_name, court_logo_data, team1_player1, team1_player2, team2_player1, team2_player2)
     active_matches[match_id] = match
     match_codes[code] = match_id
     
-    print(f"Generated code {code} for match {match_id} with Best of {best_of_sets} sets")
+    print(f"Generated code {code} for match {match_id} with Best of {best_of_sets} sets on Court {court_number} - {championship_name}")
     
     return jsonify({
         'success': True,
@@ -115,7 +129,14 @@ def tv_display(code):
                          match=match,
                          team1_name=match.team1_name,
                          team2_name=match.team2_name,
-                         best_of_sets=match.best_of_sets)
+                         team1_player1=match.team1_player1,
+                         team1_player2=match.team1_player2,
+                         team2_player1=match.team2_player1,
+                         team2_player2=match.team2_player2,
+                         best_of_sets=match.best_of_sets,
+                         court_number=match.court_number,
+                         championship_name=match.championship_name,
+                         court_logo_data=match.court_logo_data)
 
 @app.route('/api/update-match', methods=['POST'])
 def update_match():
@@ -229,28 +250,27 @@ def match_status(code):
     team1_display_score = convert_tennis_score(match.team1_game_score)
     team2_display_score = convert_tennis_score(match.team2_game_score)
     
+    # Build dynamic match data
+    match_data = {
+        'team1_name': match.team1_name,
+        'team2_name': match.team2_name,
+        'team1_game_score': team1_display_score,
+        'team2_game_score': team2_display_score,
+        'current_set': match.current_set,
+        'is_match_finished': match.is_match_finished,
+        'winning_team': match.winning_team,
+        'last_updated': match.last_updated.isoformat(),
+        'best_of_sets': match.best_of_sets
+    }
+    
+    # Add dynamic set data based on best_of_sets
+    for i in range(1, match.best_of_sets + 1):
+        match_data[f'team1_set{i}_games'] = match.team1_set_games[i]
+        match_data[f'team2_set{i}_games'] = match.team2_set_games[i]
+    
     return jsonify({
         'success': True,
-        'match': {
-            'team1_name': match.team1_name,
-            'team2_name': match.team2_name,
-            'team1_game_score': team1_display_score,
-            'team2_game_score': team2_display_score,
-            'team1_set1_games': match.team1_set1_games,
-            'team2_set1_games': match.team2_set1_games,
-            'team1_set2_games': match.team1_set2_games,
-            'team2_set2_games': match.team2_set2_games,
-            'team1_set3_games': match.team1_set3_games,
-            'team2_set3_games': match.team2_set3_games,
-            'team1_set4_games': match.team1_set4_games,
-            'team2_set4_games': match.team2_set4_games,
-            'team1_set5_games': match.team1_set5_games,
-            'team2_set5_games': match.team2_set5_games,
-            'current_set': match.current_set,
-            'is_match_finished': match.is_match_finished,
-            'winning_team': match.winning_team,
-            'last_updated': match.last_updated.isoformat()
-        }
+        'match': match_data
     })
 
 # Cleanup old matches (older than 24 hours)

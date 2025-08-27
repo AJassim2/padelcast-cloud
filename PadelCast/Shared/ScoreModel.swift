@@ -32,6 +32,9 @@ class PadelGame: ObservableObject {
     
     // Match settings
     @Published var bestOfSets = 3 // Best of 3 or 5 sets
+    @Published var courtNumber = "1" // Court number for display
+    @Published var championshipName = "PADELCAST CHAMPIONSHIP" // Championship name for display
+    @Published var courtLogoData: Data? = nil // Court logo image data
     @Published var isMatchFinished = false
     @Published var winningTeam: Int? = nil // 1 or 2
     
@@ -55,6 +58,28 @@ class PadelGame: ObservableObject {
         }
         
         checkGameWin()
+    }
+    
+    func subtractPoint(for team: Int) {
+        guard !isMatchFinished else { return }
+        
+        if team == 1 {
+            if team1GameScore > 0 {
+                team1GameScore -= 1
+            }
+        } else {
+            if team2GameScore > 0 {
+                team2GameScore -= 1
+            }
+        }
+        
+        // Reset deuce state when subtracting points
+        if team1GameScore < 3 || team2GameScore < 3 {
+            isDeuce = false
+            advantageTeam = nil
+        } else {
+            checkGameWin()
+        }
     }
     
     private func checkGameWin() {

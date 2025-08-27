@@ -1,6 +1,7 @@
 import SwiftUI
 import AVKit
 import MediaPlayer
+import PhotosUI
 
 // MARK: - TV Streaming View
 struct TVStreamingView: View {
@@ -695,20 +696,7 @@ struct ContentView: View {
                     }
                 }
             } else {
-                HStack {
-                    Text("Sets: \(game.matchScore)")
-                        .font(.headline)
-                    
-                    Spacer()
-                    
-                    Text("Games: \(game.currentSetScore)")
-                        .font(.headline)
-            
-            Spacer()
-                    
-
-                }
-                .padding(.horizontal)
+                // Clean header - removed redundant Sets and Games display
             }
         }
         .padding(.vertical, 8)
@@ -734,19 +722,19 @@ struct ContentView: View {
             VStack {
                 Rectangle()
                     .fill(Color.gray)
-                    .frame(width: 2)
+                    .frame(width: 1)
                 
                 Text("VS")
-                    .font(.title)
-                    .padding(.vertical, 8)
+                    .font(.title2)
+                    .padding(.vertical, 4)
                     .background(Color.primary.opacity(0.05))
                     .cornerRadius(8)
                 
                 Rectangle()
                     .fill(Color.gray)
-                    .frame(width: 2)
+                    .frame(width: 1)
             }
-            .frame(width: 40)
+            .frame(width: 20)
             
             // Team 2 Side
             teamSide(
@@ -776,35 +764,35 @@ struct ContentView: View {
                 if isWinner {
                     Image(systemName: "crown.fill")
                         .foregroundColor(.yellow)
-                        .font(.title2)
+                        .font(.title)
                 }
                 
                 Text(teamName)
-                    .font(.title)
+                    .font(.largeTitle)
                     .multilineTextAlignment(.center)
                     .foregroundColor(teamNumber == 1 ? .blue : .red)
                 
                 if isWinner {
                     Image(systemName: "crown.fill")
                         .foregroundColor(.yellow)
-                        .font(.title2)
+                        .font(.title)
                 }
             }
             .padding(.top)
             
             // Player names
-            VStack(spacing: 12) {
+            VStack(spacing: 16) {
                 Text(player1)
-                    .font(.title2)
+                    .font(.title)
                     .multilineTextAlignment(.center)
                     .foregroundColor(.primary)
                 
                 Text("&")
-                    .font(.title3)
+                    .font(.title2)
                     .foregroundColor(.secondary)
                 
                 Text(player2)
-                    .font(.title2)
+                    .font(.title)
                     .multilineTextAlignment(.center)
                     .foregroundColor(.primary)
             }
@@ -812,51 +800,25 @@ struct ContentView: View {
             Spacer()
             
             // Current game score - large and prominent
-            VStack(spacing: 8) {
+            VStack(spacing: 12) {
                 Text("CURRENT")
-                    .font(.caption)
+                    .font(.headline)
                     .foregroundColor(.secondary)
                 
                 Text(gameScore)
-                    .font(.system(size: 60, weight: .bold, design: .rounded))
+                    .font(.system(size: 80, weight: .bold, design: .rounded))
                     .foregroundColor(teamNumber == 1 ? .blue : .red)
-                    .frame(minHeight: 80)
+                    .frame(minHeight: 100)
             }
-            .padding()
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
             .background(Color.primary.opacity(0.05))
-            .cornerRadius(16)
-            .shadow(radius: 4)
+            .cornerRadius(20)
+            .shadow(radius: 6)
                     
                     Spacer()
             
-            // Score breakdown
-            VStack(spacing: 4) {
-                HStack {
-                    Text("Sets Won:")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    
-                    Spacer()
-                    
-                    Text("\(game.countSetsWon(for: teamNumber))")
-                        .font(.headline)
-                        .foregroundColor(teamNumber == 1 ? .blue : .red)
-                }
-                
-                HStack {
-                    Text("Games Won:")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    
-                    Spacer()
-                    
-                    Text("\(game.getGamesForSet(game.currentSet, team: teamNumber))")
-                        .font(.headline)
-                        .foregroundColor(teamNumber == 1 ? .blue : .red)
-                }
-            }
-            .padding(.horizontal, 16)
-            .padding(.bottom)
+            // Clean interface - removed redundant Sets Won and Games Won display
         }
     }
     
@@ -880,7 +842,7 @@ struct ContentView: View {
                         }
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 80)
+                        .frame(height: 70)
                         .background(Color.blue)
                         .cornerRadius(16)
                         .shadow(radius: 4)
@@ -900,8 +862,52 @@ struct ContentView: View {
                         }
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 80)
+                        .frame(height: 70)
                         .background(Color.red)
+                        .cornerRadius(16)
+                        .shadow(radius: 4)
+                    }
+                }
+                .padding(.horizontal)
+                
+                // Subtraction buttons
+                HStack(spacing: 20) {
+                    Button(action: {
+                        game.subtractPoint(for: 1)
+                        connectivityManager.sendScoreUpdate(team: 1, gameState: game)
+                        sendUpdateToWebServer()
+                    }) {
+                        VStack(spacing: 8) {
+                            Image(systemName: "minus.circle.fill")
+                                .font(.title)
+                            Text("Remove Point \(game.team1Name)")
+                                .font(.headline)
+                                .multilineTextAlignment(.center)
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 70)
+                        .background(Color.blue.opacity(0.7))
+                        .cornerRadius(16)
+                        .shadow(radius: 4)
+                    }
+                    
+                    Button(action: {
+                        game.subtractPoint(for: 2)
+                        connectivityManager.sendScoreUpdate(team: 2, gameState: game)
+                        sendUpdateToWebServer()
+                    }) {
+                        VStack(spacing: 8) {
+                            Image(systemName: "minus.circle.fill")
+                                .font(.title)
+                            Text("Remove Point \(game.team2Name)")
+                                .font(.headline)
+                                .multilineTextAlignment(.center)
+                        }
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 70)
+                        .background(Color.red.opacity(0.7))
                         .cornerRadius(16)
                         .shadow(radius: 4)
                     }
@@ -920,31 +926,6 @@ struct ContentView: View {
                             .foregroundColor(.green)
                     }
                 }
-            }
-            
-            // Reset buttons
-            HStack(spacing: 16) {
-                Button("Reset Game") {
-                    game.resetGame()
-                    connectivityManager.sendGameReset()
-                    sendUpdateToWebServer()
-                }
-                .padding(.horizontal, 24)
-                .padding(.vertical, 12)
-                .background(Color.orange.opacity(0.1))
-                .foregroundColor(.orange)
-                .cornerRadius(8)
-                
-                Button("Reset Match") {
-                    game.resetMatch()
-                    connectivityManager.sendMatchReset()
-                    sendUpdateToWebServer()
-                }
-                .padding(.horizontal, 24)
-            .padding(.vertical, 12)
-                .background(Color.purple.opacity(0.1))
-                .foregroundColor(.purple)
-                .cornerRadius(8)
             }
             
             // TV Code Input Button
@@ -978,6 +959,7 @@ struct PlayerSetupView: View {
     @EnvironmentObject var connectivityManager: WatchConnectivityManager
     @State private var showingScorer = false
     @State private var customBestOf = ""
+    @State private var showingImagePicker = false
     
     var body: some View {
         NavigationView {
@@ -1016,6 +998,9 @@ struct PlayerSetupView: View {
                     // Match Settings
                     matchSettingsCard
                     
+                    // Court Number Setup
+                    courtNumberCard
+                    
                     // Start Match Button
                     Button("Start Match") {
                         game.resetMatch()
@@ -1037,6 +1022,9 @@ struct PlayerSetupView: View {
             .navigationBarHidden(true)
             .fullScreenCover(isPresented: $showingScorer) {
                 ContentView()
+            }
+            .sheet(isPresented: $showingImagePicker) {
+                ImagePicker(selectedImageData: $game.courtLogoData)
             }
             .onChange(of: game.team1Name) { _ in
                 connectivityManager.sendGameState(game)
@@ -1181,6 +1169,108 @@ struct PlayerSetupView: View {
                 .stroke(Color.purple.opacity(0.3), lineWidth: 1)
         )
     }
+    
+    // MARK: - Court Information Card
+    private var courtNumberCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text("Court Information")
+                    .font(.title2)
+                    .foregroundColor(.orange)
+                
+                Spacer()
+                
+                Image(systemName: "building.2.fill")
+                    .foregroundColor(.orange)
+                    .font(.title2)
+            }
+            
+            VStack(alignment: .leading, spacing: 12) {
+                // Championship Name
+                Text("Championship Name")
+                    .font(.headline)
+                    .foregroundColor(.orange)
+                
+                TextField("Enter championship name", text: $game.championshipName)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                
+                // Court Number
+                Text("Court Number")
+                    .font(.headline)
+                    .foregroundColor(.orange)
+                
+                HStack {
+                    Text("Court:")
+                        .font(.subheadline)
+                        .foregroundColor(.orange)
+                    
+                    TextField("Enter court number", text: $game.courtNumber)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .keyboardType(.numberPad)
+                        .frame(width: 120)
+                }
+                
+                // Court Logo Upload
+                Text("Court Logo")
+                    .font(.headline)
+                    .foregroundColor(.orange)
+                
+                HStack {
+                    Button(action: {
+                        showingImagePicker = true
+                    }) {
+                        HStack {
+                            Image(systemName: "photo")
+                                .foregroundColor(.orange)
+                            Text("Upload Logo")
+                                .foregroundColor(.orange)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color.orange.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                    
+                    Spacer()
+                    
+                    if game.courtLogoData != nil {
+                        Text("✓ Logo uploaded")
+                            .font(.caption)
+                            .foregroundColor(.green)
+                    }
+                }
+                
+                // Preview
+                if !game.courtNumber.isEmpty || !game.championshipName.isEmpty {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Preview:")
+                            .font(.subheadline)
+                            .foregroundColor(.orange)
+                        
+                        if !game.championshipName.isEmpty {
+                            Text("Championship: \(game.championshipName)")
+                                .font(.caption)
+                                .foregroundColor(.green)
+                        }
+                        
+                        if !game.courtNumber.isEmpty {
+                            Text("Court: \(game.courtNumber)")
+                                .font(.caption)
+                                .foregroundColor(.green)
+                        }
+                    }
+                    .padding(.top, 4)
+                }
+            }
+        }
+        .padding(20)
+        .background(Color.orange.opacity(0.1))
+        .cornerRadius(16)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+        )
+    }
 }
 
 // MARK: - Cloud Service
@@ -1191,17 +1281,28 @@ class PadelCastCloudService: ObservableObject {
         self.baseURL = baseURL
     }
     
-    func generateCode(team1: String, team2: String, bestOfSets: Int) async throws -> (code: String, tvURL: String) {
+    func generateCode(team1: String, team2: String, bestOfSets: Int, courtNumber: String, championshipName: String, courtLogoData: Data?, game: PadelGame) async throws -> (code: String, tvURL: String) {
         let url = URL(string: "\(baseURL)/generate-code")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let data: [String: Any] = [
+        var data: [String: Any] = [
             "team1_name": team1,
             "team2_name": team2,
-            "best_of_sets": bestOfSets
+            "best_of_sets": bestOfSets,
+            "court_number": courtNumber,
+            "championship_name": championshipName,
+            "team1_player1": game.team1Player1,
+            "team1_player2": game.team1Player2,
+            "team2_player1": game.team2Player1,
+            "team2_player2": game.team2Player2
         ]
+        
+        if let logoData = courtLogoData {
+            data["court_logo_data"] = logoData.base64EncodedString()
+        }
+        
         request.httpBody = try JSONSerialization.data(withJSONObject: data)
         
         let (responseData, _) = try await URLSession.shared.data(for: request)
@@ -1231,6 +1332,70 @@ struct CodeResponse: Codable {
     let tv_url: String
 }
 
+// MARK: - Image Picker
+struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var selectedImageData: Data?
+    @Environment(\.presentationMode) var presentationMode
+    
+    func makeUIViewController(context: Context) -> PHPickerViewController {
+        var configuration = PHPickerConfiguration()
+        configuration.filter = .images
+        configuration.selectionLimit = 1
+        
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = context.coordinator
+        return picker
+    }
+    
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+    
+    class Coordinator: NSObject, PHPickerViewControllerDelegate {
+        let parent: ImagePicker
+        
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+        
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            parent.presentationMode.wrappedValue.dismiss()
+            
+            guard let provider = results.first?.itemProvider else { return }
+            
+            if provider.canLoadObject(ofClass: UIImage.self) {
+                provider.loadObject(ofClass: UIImage.self) { image, _ in
+                    DispatchQueue.main.async {
+                        if let image = image as? UIImage {
+                            // Resize image to reasonable size for web display
+                            let resizedImage = self.resizeImage(image, targetSize: CGSize(width: 200, height: 200))
+                            self.parent.selectedImageData = resizedImage.jpegData(compressionQuality: 0.8)
+                        }
+                    }
+                }
+            }
+        }
+        
+        private func resizeImage(_ image: UIImage, targetSize: CGSize) -> UIImage {
+            let size = image.size
+            let widthRatio  = targetSize.width  / size.width
+            let heightRatio = targetSize.height / size.height
+            let newSize = widthRatio > heightRatio ?  CGSize(width: size.width * heightRatio, height: size.height * heightRatio) : CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+            
+            let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+            
+            UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+            image.draw(in: rect)
+            let newImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            return newImage!
+        }
+    }
+}
+
 // MARK: - Best Of Button Style
 struct BestOfButtonStyle: ButtonStyle {
     let isSelected: Bool
@@ -1256,8 +1421,7 @@ struct TVCodeInputView: View {
     @State private var serverPort = "8080"
     @State private var cloudURL = "http://localhost:8080"
     @State private var useCloud = false
-    @State private var team1Name = "Team A"
-    @State private var team2Name = "Team B"
+    // Team names removed - will be taken from main game state
     @State private var isGeneratingCode = false
     @State private var generatedTVURL = ""
     @State private var showCloudAlert = false
@@ -1317,22 +1481,7 @@ struct TVCodeInputView: View {
                                 .foregroundColor(.green)
                         }
                         
-                        // Team Names for Cloud
-                        VStack(spacing: 12) {
-                            Text("Team Names")
-                                .font(.subheadline)
-                                .foregroundColor(.primary)
-                            
-                            HStack(spacing: 12) {
-                                TextField("Team 1", text: $team1Name)
-                                    .textFieldStyle(.roundedBorder)
-                                    .font(.body)
-                                
-                                TextField("Team 2", text: $team2Name)
-                                    .textFieldStyle(.roundedBorder)
-                                    .font(.body)
-                            }
-                        }
+                        // Team names removed - will be taken from main setup page
                         
 
                         
@@ -1356,7 +1505,7 @@ struct TVCodeInputView: View {
                             .background(Color.blue)
                             .cornerRadius(12)
                         }
-                        .disabled(isGeneratingCode || team1Name.isEmpty || team2Name.isEmpty)
+                        .disabled(isGeneratingCode)
                         
                         if !generatedTVURL.isEmpty {
                             VStack(spacing: 8) {
@@ -1436,34 +1585,7 @@ struct TVCodeInputView: View {
                     .padding(.horizontal, 40)
                 }
                 
-                // Instructions
-                VStack(spacing: 12) {
-                    Text(useCloud ? "Cloud Service Instructions:" : "Local Server Instructions:")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    
-                    if useCloud {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("1. Enter your cloud URL above")
-                            Text("2. Enter team names")
-                            Text("3. Tap 'Generate Code from Cloud'")
-                            Text("4. Copy the TV URL to your TV browser")
-                            Text("5. Start scoring in the app")
-                        }
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    } else {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("1. Open your web browser")
-                            Text("2. Go to: http://\(serverIP):\(serverPort)")
-                            Text("3. Enter team names and generate code")
-                            Text("4. Enter the code here")
-                        }
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    }
-                }
-                .padding(.horizontal, 40)
+                // Instructions removed for cleaner interface
                 
                 Spacer()
                 
@@ -1474,8 +1596,6 @@ struct TVCodeInputView: View {
                             tvCode = tempCode
                             // Save cloud configuration to UserDefaults
                             UserDefaults.standard.set(cloudURL, forKey: "cloudURL")
-                            UserDefaults.standard.set(team1Name, forKey: "team1Name")
-                            UserDefaults.standard.set(team2Name, forKey: "team2Name")
                             UserDefaults.standard.set(true, forKey: "useCloud")
                             UserDefaults.standard.set(tempCode, forKey: "tvCode")
                             onCodeSaved?()
@@ -1486,10 +1606,10 @@ struct TVCodeInputView: View {
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 50)
-                                .background(!cloudURL.isEmpty && !team1Name.isEmpty && !team2Name.isEmpty ? Color.blue : Color.gray)
+                                .background(!cloudURL.isEmpty ? Color.blue : Color.gray)
                                 .cornerRadius(12)
                         }
-                        .disabled(cloudURL.isEmpty || team1Name.isEmpty || team2Name.isEmpty)
+                        .disabled(cloudURL.isEmpty)
                     } else {
                         Button(action: {
                             tvCode = tempCode
@@ -1538,12 +1658,7 @@ struct TVCodeInputView: View {
             if let savedCloudURL = UserDefaults.standard.string(forKey: "cloudURL") {
                 cloudURL = savedCloudURL
             }
-            if let savedTeam1 = UserDefaults.standard.string(forKey: "team1Name") {
-                team1Name = savedTeam1
-            }
-            if let savedTeam2 = UserDefaults.standard.string(forKey: "team2Name") {
-                team2Name = savedTeam2
-            }
+            // Team names removed - will be taken from main game state
             useCloud = UserDefaults.standard.bool(forKey: "useCloud")
         }
         .alert("Cloud Service", isPresented: $showCloudAlert) {
@@ -1559,7 +1674,7 @@ struct TVCodeInputView: View {
         Task {
             do {
                 let cloudService = PadelCastCloudService(baseURL: cloudURL)
-                let result = try await cloudService.generateCode(team1: team1Name, team2: team2Name, bestOfSets: game.bestOfSets)
+                let result = try await cloudService.generateCode(team1: game.team1Name, team2: game.team2Name, bestOfSets: game.bestOfSets, courtNumber: game.courtNumber, championshipName: game.championshipName, courtLogoData: game.courtLogoData, game: game)
                 
                 await MainActor.run {
                     tempCode = result.code
