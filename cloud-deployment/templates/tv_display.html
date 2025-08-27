@@ -74,6 +74,24 @@
             font-weight: bold;
         }
         
+        /* Court Display (Center) */
+        .court-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 2px solid #e74c3c;
+        }
+        
+        .court-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e74c3c;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
+        
         /* Main Scoreboard */
         .main-scoreboard {
             flex: 1;
@@ -331,7 +349,11 @@
                     <div class="match-type">Doubles Match</div>
                 </div>
             </div>
-            <div class="court-info">COURT {{ code }}</div>
+        </div>
+        
+        <!-- Court Number Display (Center) -->
+        <div class="court-display">
+            <div class="court-number">COURT {{ court_number }}</div>
         </div>
         
         <!-- Main Scoreboard -->

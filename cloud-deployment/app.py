@@ -15,13 +15,14 @@ active_matches = {}
 match_codes = {}  # code -> match_id mapping
 
 class Match:
-    def __init__(self, match_id, team1_name, team2_name, best_of_sets=5):
+    def __init__(self, match_id, team1_name, team2_name, best_of_sets=5, court_number="1"):
         self.match_id = match_id
         self.team1_name = team1_name
         self.team2_name = team2_name
         self.team1_game_score = "0"
         self.team2_game_score = "0"
         self.best_of_sets = best_of_sets
+        self.court_number = court_number
         
         # Initialize dynamic set game counters
         self.team1_set_games = {}
@@ -80,17 +81,18 @@ def generate_code():
     team1_name = data.get('team1_name', 'Team 1')
     team2_name = data.get('team2_name', 'Team 2')
     best_of_sets = data.get('best_of_sets', 5)  # Default to 5 if not provided
+    court_number = data.get('court_number', '1')  # Default to 1 if not provided
     
     # Generate unique match ID and code
     match_id = str(uuid.uuid4())
     code = generate_match_code()
     
-    # Create new match with best_of_sets
-    match = Match(match_id, team1_name, team2_name, best_of_sets)
+    # Create new match with best_of_sets and court_number
+    match = Match(match_id, team1_name, team2_name, best_of_sets, court_number)
     active_matches[match_id] = match
     match_codes[code] = match_id
     
-    print(f"🚀 Generated code {code} for match {match_id} with Best of {best_of_sets} sets - Cloud updated at {datetime.now()}")
+    print(f"🚀 Generated code {code} for match {match_id} with Best of {best_of_sets} sets on Court {court_number} - Cloud updated at {datetime.now()}")
     
     return jsonify({
         'success': True,
@@ -115,7 +117,8 @@ def tv_display(code):
                          match=match,
                          team1_name=match.team1_name,
                          team2_name=match.team2_name,
-                         best_of_sets=match.best_of_sets)
+                         best_of_sets=match.best_of_sets,
+                         court_number=match.court_number)
 
 @app.route('/api/update-match', methods=['POST'])
 def update_match():
