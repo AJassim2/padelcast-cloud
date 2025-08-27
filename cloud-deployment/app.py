@@ -151,8 +151,10 @@ def update_match():
         if set_num in data:
             set_games = data.get(set_num)
             if set_games is not None:
-                setattr(match, f"team1_{set_num}", set_games[0])
-                setattr(match, f"team2_{set_num}", set_games[1])
+                print(f"📱 Processing {set_num}: {set_games}")
+                setattr(match, f"team1_set{i}_games", set_games[0])
+                setattr(match, f"team2_set{i}_games", set_games[1])
+                print(f"📱 Set {i} - Team 1: {getattr(match, f'team1_set{i}_games')}, Team 2: {getattr(match, f'team2_set{i}_games')}")
     
     match.current_set = data.get('current_set', match.current_set)
     match.is_match_finished = data.get('is_match_finished', match.is_match_finished)
@@ -189,6 +191,12 @@ def update_match():
     }
     
     print(f"📺 Emitting update to room {code} with data: {update_data}")
+    print(f"📺 Set scores being sent:")
+    print(f"   Set 1: Team 1 = {update_data['team1_set1_games']}, Team 2 = {update_data['team2_set1_games']}")
+    print(f"   Set 2: Team 1 = {update_data['team1_set2_games']}, Team 2 = {update_data['team2_set2_games']}")
+    print(f"   Set 3: Team 1 = {update_data['team1_set3_games']}, Team 2 = {update_data['team2_set3_games']}")
+    print(f"   Set 4: Team 1 = {update_data['team1_set4_games']}, Team 2 = {update_data['team2_set4_games']}")
+    print(f"   Set 5: Team 1 = {update_data['team1_set5_games']}, Team 2 = {update_data['team2_set5_games']}")
     
     # Emit update to all connected TV displays
     socketio.emit('match_update', update_data, room=code)
