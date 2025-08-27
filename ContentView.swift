@@ -78,18 +78,18 @@ struct TVScoreDisplayView: View {
                 teamName: game.team1Name,
                 player1: game.team1Player1,
                 player2: game.team1Player2,
-                games: game.team1Games,
+                games: game.getGamesForSet(game.currentSet, team: 1),
                 points: game.team1GameScore,
                 color: .blue
             )
             
-            TVVSView(currentSet: game.team1Sets + game.team2Sets + 1)
+            TVVSView(currentSet: game.currentSet)
             
             TVTeamView(
                 teamName: game.team2Name,
                 player1: game.team2Player1,
                 player2: game.team2Player2,
-                games: game.team2Games,
+                games: game.getGamesForSet(game.currentSet, team: 2),
                 points: game.team2GameScore,
                 color: .red
             )
@@ -197,7 +197,7 @@ struct TVMatchProgressView: View {
                     .font(.system(size: 20, weight: .medium, design: .rounded))
                     .foregroundColor(.white.opacity(0.9))
                 
-                Text("Set \(game.team1Sets + game.team2Sets + 1) of \(game.bestOfSets)")
+                Text("Set \(game.currentSet) of \(game.bestOfSets)")
                     .font(.system(size: 20, weight: .medium, design: .rounded))
                     .foregroundColor(.yellow)
             }
@@ -364,7 +364,7 @@ struct ContentView: View {
     @State private var tvCode = ""
     @State private var showingTVCodeAlert = false
     @State private var tvCodeAlertMessage = ""
-    @State private var showingBestOfConfig = false
+
     
     var body: some View {
         GeometryReader { geometry in
@@ -425,9 +425,7 @@ struct ContentView: View {
                 fetchMatchDataFromWebServer()
             })
         }
-        .sheet(isPresented: $showingBestOfConfig) {
-            BestOfConfigView(game: game)
-        }
+
 
     }
     
@@ -444,18 +442,30 @@ struct ContentView: View {
             Task {
                 do {
                     let cloudService = PadelCastCloudService(baseURL: cloudURL)
-                    let matchData: [String: Any] = [
+                    var matchData: [String: Any] = [
                         "team1_name": game.team1Name,
                         "team2_name": game.team2Name,
                         "team1_game_score": game.team1GameScore,
                         "team2_game_score": game.team2GameScore,
-                        "team1_games": game.team1Games,
-                        "team2_games": game.team2Games,
-                        "team1_sets": game.team1Sets,
-                        "team2_sets": game.team2Sets,
+                        "current_set": game.currentSet,
                         "is_match_finished": game.isMatchFinished,
                         "winning_team": game.winningTeam ?? -1
                     ]
+                    
+                    // Add dynamic set data based on bestOfSets
+                    for i in 1...game.bestOfSets {
+                        let team1Games = game.getGamesForSet(i, team: 1)
+                        let team2Games = game.getGamesForSet(i, team: 2)
+                        matchData["set\(i)_games"] = [team1Games, team2Games]
+                    }
+                    
+                    print("📱 iPhone sending to cloud (Best of \(game.bestOfSets)):")
+                    for i in 1...game.bestOfSets {
+                        let team1Games = game.getGamesForSet(i, team: 1)
+                        let team2Games = game.getGamesForSet(i, team: 2)
+                        print("   Set \(i): [\(team1Games), \(team2Games)]")
+                    }
+                    print("   Current Set: \(game.currentSet)")
                     
                     try await cloudService.updateMatch(code: tvCode, matchData: matchData)
                     print("✅ Successfully sent update to cloud server")
@@ -473,19 +483,31 @@ struct ContentView: View {
             request.httpMethod = "POST"
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             
-            let data: [String: Any] = [
+            var data: [String: Any] = [
                 "code": tvCode,
                 "team1_name": game.team1Name,
                 "team2_name": game.team2Name,
                 "team1_game_score": game.team1GameScore,
                 "team2_game_score": game.team2GameScore,
-                "team1_games": game.team1Games,
-                "team2_games": game.team2Games,
-                "team1_sets": game.team1Sets,
-                "team2_sets": game.team2Sets,
+                "current_set": game.currentSet,
                 "is_match_finished": game.isMatchFinished,
                 "winning_team": game.winningTeam ?? -1
             ]
+            
+            // Add dynamic set data based on bestOfSets
+            for i in 1...game.bestOfSets {
+                let team1Games = game.getGamesForSet(i, team: 1)
+                let team2Games = game.getGamesForSet(i, team: 2)
+                data["set\(i)_games"] = [team1Games, team2Games]
+            }
+            
+            print("📱 iPhone sending to local server (Best of \(game.bestOfSets)):")
+            for i in 1...game.bestOfSets {
+                let team1Games = game.getGamesForSet(i, team: 1)
+                let team2Games = game.getGamesForSet(i, team: 2)
+                print("   Set \(i): [\(team1Games), \(team2Games)]")
+            }
+            print("   Current Set: \(game.currentSet)")
             
             do {
                 request.httpBody = try JSONSerialization.data(withJSONObject: data)
@@ -612,14 +634,7 @@ struct ContentView: View {
                 .foregroundColor(.red)
                 .cornerRadius(8)
                 
-                Button("Best of \(game.bestOfSets)") {
-                    showingBestOfConfig = true
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                .background(Color.blue.opacity(0.1))
-                .foregroundColor(.blue)
-                .cornerRadius(8)
+
                 
                 Spacer()
                 
@@ -690,9 +705,7 @@ struct ContentView: View {
             
             Spacer()
                     
-                    Text("Best of \(game.bestOfSets)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+
                 }
                 .padding(.horizontal)
             }
@@ -824,7 +837,7 @@ struct ContentView: View {
                     
                     Spacer()
                     
-                    Text("\(teamNumber == 1 ? game.team1Sets : game.team2Sets)")
+                    Text("\(game.countSetsWon(for: teamNumber))")
                         .font(.headline)
                         .foregroundColor(teamNumber == 1 ? .blue : .red)
                 }
@@ -836,7 +849,7 @@ struct ContentView: View {
                     
                     Spacer()
                     
-                    Text("\(teamNumber == 1 ? game.team1Games : game.team2Games)")
+                    Text("\(game.getGamesForSet(game.currentSet, team: teamNumber))")
                         .font(.headline)
                         .foregroundColor(teamNumber == 1 ? .blue : .red)
                 }
@@ -1128,15 +1141,16 @@ class PadelCastCloudService: ObservableObject {
         self.baseURL = baseURL
     }
     
-    func generateCode(team1: String, team2: String) async throws -> (code: String, tvURL: String) {
+    func generateCode(team1: String, team2: String, bestOfSets: Int) async throws -> (code: String, tvURL: String) {
         let url = URL(string: "\(baseURL)/generate-code")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let data = [
+        let data: [String: Any] = [
             "team1_name": team1,
-            "team2_name": team2
+            "team2_name": team2,
+            "best_of_sets": bestOfSets
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: data)
         
@@ -1167,10 +1181,26 @@ struct CodeResponse: Codable {
     let tv_url: String
 }
 
+// MARK: - Best Of Button Style
+struct BestOfButtonStyle: ButtonStyle {
+    let isSelected: Bool
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(isSelected ? Color.blue : Color.gray.opacity(0.3))
+            .foregroundColor(isSelected ? .white : .primary)
+            .cornerRadius(8)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+    }
+}
+
 // MARK: - TV Code Input View
 struct TVCodeInputView: View {
     @Binding var tvCode: String
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var game: PadelGame
     @State private var tempCode = ""
     @State private var serverIP = "192.168.100.122"
     @State private var serverPort = "8080"
@@ -1253,6 +1283,8 @@ struct TVCodeInputView: View {
                                     .font(.body)
                             }
                         }
+                        
+
                         
                         // Generate Code Button
                         Button(action: generateCodeFromCloud) {
@@ -1477,7 +1509,7 @@ struct TVCodeInputView: View {
         Task {
             do {
                 let cloudService = PadelCastCloudService(baseURL: cloudURL)
-                let result = try await cloudService.generateCode(team1: team1Name, team2: team2Name)
+                let result = try await cloudService.generateCode(team1: team1Name, team2: team2Name, bestOfSets: game.bestOfSets)
                 
                 await MainActor.run {
                     tempCode = result.code
@@ -1497,114 +1529,7 @@ struct TVCodeInputView: View {
     }
 }
 
-// MARK: - Best Of Configuration View
-struct BestOfConfigView: View {
-    @ObservedObject var game: PadelGame
-    @Environment(\.dismiss) private var dismiss
-    @State private var selectedBestOf = 3
-    @State private var customBestOf = ""
-    
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Text("Match Configuration")
-                    .font(.title)
-                    .fontWeight(.bold)
-                
-                VStack(alignment: .leading, spacing: 15) {
-                    Text("Best of Sets")
-                        .font(.headline)
-                    
-                    VStack(spacing: 10) {
-                        // Preset options
-                        HStack(spacing: 15) {
-                            BestOfButton(title: "Best of 3", value: 3, selected: selectedBestOf == 3) {
-                                selectedBestOf = 3
-                            }
-                            
-                            BestOfButton(title: "Best of 5", value: 5, selected: selectedBestOf == 5) {
-                                selectedBestOf = 5
-                            }
-                            
-                            BestOfButton(title: "Best of 9", value: 9, selected: selectedBestOf == 9) {
-                                selectedBestOf = 9
-                            }
-                        }
-                        
-                        // Custom option
-                        HStack {
-                            Text("Custom:")
-                                .font(.subheadline)
-                            
-                            TextField("Enter number", text: $customBestOf)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .keyboardType(.numberPad)
-                                .frame(width: 100)
-                            
-                            Button("Set") {
-                                if let value = Int(customBestOf), value > 0 {
-                                    selectedBestOf = value
-                                }
-                            }
-                            .disabled(customBestOf.isEmpty || Int(customBestOf) == nil)
-                        }
-                    }
-                }
-                
-                Spacer()
-                
-                // Action buttons
-                VStack(spacing: 15) {
-                    Button("Apply Configuration") {
-                        game.setBestOf(selectedBestOf)
-                        dismiss()
-                    }
-                    .font(.headline)
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 50)
-                    .background(Color.blue)
-                    .cornerRadius(12)
-                    
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                    .foregroundColor(.secondary)
-                }
-                .padding(.horizontal, 40)
-            }
-            .padding()
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing: Button("Done") {
-                dismiss()
-            })
-            .onAppear {
-                selectedBestOf = game.bestOfSets
-            }
-        }
-    }
-}
 
-// MARK: - Best Of Button
-struct BestOfButton: View {
-    let title: String
-    let value: Int
-    let selected: Bool
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundColor(selected ? .white : .blue)
-                .frame(maxWidth: .infinity)
-                .frame(height: 40)
-                .background(selected ? Color.blue : Color.blue.opacity(0.1))
-                .cornerRadius(8)
-        }
-    }
-}
 
 #Preview {
     ContentView()

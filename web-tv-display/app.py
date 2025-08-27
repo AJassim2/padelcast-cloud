@@ -15,24 +15,20 @@ active_matches = {}
 match_codes = {}  # code -> match_id mapping
 
 class Match:
-    def __init__(self, match_id, team1_name, team2_name):
+    def __init__(self, match_id, team1_name, team2_name, best_of_sets=5):
         self.match_id = match_id
         self.team1_name = team1_name
         self.team2_name = team2_name
         self.team1_game_score = "0"
         self.team2_game_score = "0"
+        self.best_of_sets = best_of_sets
         
-        # Games won in each set
-        self.team1_set1_games = 0
-        self.team2_set1_games = 0
-        self.team1_set2_games = 0
-        self.team2_set2_games = 0
-        self.team1_set3_games = 0
-        self.team2_set3_games = 0
-        self.team1_set4_games = 0
-        self.team2_set4_games = 0
-        self.team1_set5_games = 0
-        self.team2_set5_games = 0
+        # Initialize dynamic set game counters
+        self.team1_set_games = {}
+        self.team2_set_games = {}
+        for i in range(1, best_of_sets + 1):
+            self.team1_set_games[i] = 0
+            self.team2_set_games[i] = 0
         
         # Current set being played
         self.current_set = 1
@@ -41,6 +37,12 @@ class Match:
         self.winning_team = None
         self.created_at = datetime.now()
         self.last_updated = datetime.now()
+    
+    def get_team1_set_games(self, set_num):
+        return self.team1_set_games.get(set_num, 0)
+    
+    def get_team2_set_games(self, set_num):
+        return self.team2_set_games.get(set_num, 0)
 
 def generate_match_code():
     """Generate a unique 6-character code for the match"""
@@ -77,17 +79,18 @@ def generate_code():
     data = request.get_json()
     team1_name = data.get('team1_name', 'Team 1')
     team2_name = data.get('team2_name', 'Team 2')
+    best_of_sets = data.get('best_of_sets', 5)  # Default to 5 if not provided
     
     # Generate unique match ID and code
     match_id = str(uuid.uuid4())
     code = generate_match_code()
     
-    # Create new match
-    match = Match(match_id, team1_name, team2_name)
+    # Create new match with best_of_sets
+    match = Match(match_id, team1_name, team2_name, best_of_sets)
     active_matches[match_id] = match
     match_codes[code] = match_id
     
-    print(f"Generated code {code} for match {match_id}")
+    print(f"Generated code {code} for match {match_id} with Best of {best_of_sets} sets")
     
     return jsonify({
         'success': True,
@@ -111,7 +114,8 @@ def tv_display(code):
                          code=code, 
                          match=match,
                          team1_name=match.team1_name,
-                         team2_name=match.team2_name)
+                         team2_name=match.team2_name,
+                         best_of_sets=match.best_of_sets)
 
 @app.route('/api/update-match', methods=['POST'])
 def update_match():
@@ -146,13 +150,15 @@ def update_match():
     match.team2_game_score = data.get('team2_game_score', match.team2_game_score)
     
     # Update set game scores
-    for i in range(1, 6):
+    for i in range(1, match.best_of_sets + 1):
         set_num = f"set{i}_games"
         if set_num in data:
             set_games = data.get(set_num)
             if set_games is not None:
-                setattr(match, f"team1_{set_num}", set_games[0])
-                setattr(match, f"team2_{set_num}", set_games[1])
+                print(f"📱 Processing {set_num}: {set_games}")
+                match.team1_set_games[i] = set_games[0]
+                match.team2_set_games[i] = set_games[1]
+                print(f"📱 Set {i} - Team 1: {match.team1_set_games[i]}, Team 2: {match.team2_set_games[i]}")
     
     match.current_set = data.get('current_set', match.current_set)
     match.is_match_finished = data.get('is_match_finished', match.is_match_finished)
@@ -172,23 +178,22 @@ def update_match():
         'team2_name': match.team2_name,
         'team1_game_score': team1_display_score,
         'team2_game_score': team2_display_score,
-        'team1_set1_games': match.team1_set1_games,
-        'team2_set1_games': match.team2_set1_games,
-        'team1_set2_games': match.team1_set2_games,
-        'team2_set2_games': match.team2_set2_games,
-        'team1_set3_games': match.team1_set3_games,
-        'team2_set3_games': match.team2_set3_games,
-        'team1_set4_games': match.team1_set4_games,
-        'team2_set4_games': match.team2_set4_games,
-        'team1_set5_games': match.team1_set5_games,
-        'team2_set5_games': match.team2_set5_games,
         'current_set': match.current_set,
         'is_match_finished': match.is_match_finished,
         'winning_team': match.winning_team,
-        'last_updated': match.last_updated.isoformat()
+        'last_updated': match.last_updated.isoformat(),
+        'best_of_sets': match.best_of_sets
     }
     
+    # Add dynamic set scores
+    for i in range(1, match.best_of_sets + 1):
+        update_data[f'team1_set{i}_games'] = match.team1_set_games[i]
+        update_data[f'team2_set{i}_games'] = match.team2_set_games[i]
+    
     print(f"📺 Emitting update to room {code} with data: {update_data}")
+    print(f"📺 Set scores being sent (Best of {match.best_of_sets}):")
+    for i in range(1, match.best_of_sets + 1):
+        print(f"   Set {i}: Team 1 = {update_data[f'team1_set{i}_games']}, Team 2 = {update_data[f'team2_set{i}_games']}")
     
     # Emit update to all connected TV displays
     socketio.emit('match_update', update_data, room=code)

@@ -90,37 +90,49 @@ class PadelGame: ObservableObject {
     }
     
     private func winGame(for team: Int) {
+        print("🎾 winGame called for team \(team) in set \(currentSet)")
+        
         // Add game to current set
         switch currentSet {
         case 1:
             if team == 1 {
                 team1Set1Games += 1
+                print("🎾 Team 1 won game in Set 1. New score: \(team1Set1Games)")
             } else {
                 team2Set1Games += 1
+                print("🎾 Team 2 won game in Set 1. New score: \(team2Set1Games)")
             }
         case 2:
             if team == 1 {
                 team1Set2Games += 1
+                print("🎾 Team 1 won game in Set 2. New score: \(team1Set2Games)")
             } else {
                 team2Set2Games += 1
+                print("🎾 Team 2 won game in Set 2. New score: \(team2Set2Games)")
             }
         case 3:
             if team == 1 {
                 team1Set3Games += 1
+                print("🎾 Team 1 won game in Set 3. New score: \(team1Set3Games)")
             } else {
                 team2Set3Games += 1
+                print("🎾 Team 2 won game in Set 3. New score: \(team2Set3Games)")
             }
         case 4:
             if team == 1 {
                 team1Set4Games += 1
+                print("🎾 Team 1 won game in Set 4. New score: \(team1Set4Games)")
             } else {
                 team2Set4Games += 1
+                print("🎾 Team 2 won game in Set 4. New score: \(team2Set4Games)")
             }
         case 5:
             if team == 1 {
                 team1Set5Games += 1
+                print("🎾 Team 1 won game in Set 5. New score: \(team1Set5Games)")
             } else {
                 team2Set5Games += 1
+                print("🎾 Team 2 won game in Set 5. New score: \(team2Set5Games)")
             }
         default:
             break
@@ -185,7 +197,7 @@ class PadelGame: ObservableObject {
         }
     }
     
-    private func countSetsWon(for team: Int) -> Int {
+    func countSetsWon(for team: Int) -> Int {
         var setsWon = 0
         
         // Count sets won by checking which team has more games in each set
