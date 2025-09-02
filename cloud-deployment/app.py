@@ -67,18 +67,27 @@ def generate_tv_session():
         'timestamp': datetime.now().isoformat()
     }
     
-    # Generate QR code
-    qr = qrcode.QRCode(version=1, box_size=10, border=5)
-    qr.add_data(json.dumps(qr_data))
-    qr.make(fit=True)
-    
-    # Create QR code image
-    img = qr.make_image(fill_color="black", back_color="white")
-    
-    # Convert to base64 for embedding in HTML
-    buffer = BytesIO()
-    img.save(buffer, format='PNG')
-    qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+    try:
+        # Generate QR code
+        qr = qrcode.QRCode(version=1, box_size=10, border=5)
+        qr.add_data(json.dumps(qr_data))
+        qr.make(fit=True)
+        
+        # Create QR code image
+        img = qr.make_image(fill_color="black", back_color="white")
+        
+        # Convert to base64 for embedding in HTML
+        buffer = BytesIO()
+        img.save(buffer, format='PNG')
+        qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+        
+        print(f"✅ QR code generated successfully for TV {tv_id}")
+        
+    except Exception as e:
+        print(f"❌ Error generating QR code: {e}")
+        # Fallback: create a simple text-based QR representation
+        qr_base64 = None
+        qr_data['error'] = str(e)
     
     # Store TV session
     tv_sessions[tv_id] = {
