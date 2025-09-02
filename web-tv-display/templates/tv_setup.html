@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PadelCast - TV Setup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        .qr-container {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px dashed #dee2e6;
+        }
+        
+        .qr-code {
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .qr-code img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .instructions {
+            margin: 30px 0;
+            text-align: left;
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .instructions h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            color: #424242;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .tv-info {
+            background: #f3e5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #9c27b0;
+        }
+        
+        .tv-id {
+            font-family: monospace;
+            background: #fff;
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+        
+        .status.waiting {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .status.linked {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 20px 10px;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .refresh-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .auto-refresh {
+            margin: 20px 0;
+            padding: 15px;
+            background: #fff8e1;
+            border-radius: 10px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .auto-refresh p {
+            color: #f57c00;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎾 PadelCast</div>
+        <div class="subtitle">TV Display Setup</div>
+        
+        <div class="tv-info">
+            <strong>TV Session ID:</strong><br>
+            <span class="tv-id">{{ tv_id }}</span>
+        </div>
+        
+        <div class="status waiting" id="status">
+            ⏳ Waiting for iPhone app to scan QR code
+        </div>
+        
+        <div class="qr-container">
+            <h3>📱 Scan this QR code with your iPhone app</h3>
+            <div class="qr-code">
+                <img src="data:image/png;base64,{{ qr_code }}" alt="QR Code for TV linking">
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 How to connect:</h3>
+            <ol>
+                <li><strong>Open your iPhone app</strong> and go to the TV linking section</li>
+                <li><strong>Scan this QR code</strong> using your iPhone's camera or the app's scanner</li>
+                <li><strong>Configure your match</strong> (team names, players, settings)</li>
+                <li><strong>Start the match</strong> and the TV will automatically display the scoreboard</li>
+            </ol>
+        </div>
+        
+        <div class="auto-refresh">
+            <p>🔄 This page will automatically refresh when an iPhone app connects. 
+            You can also manually refresh to check the connection status.</p>
+        </div>
+        
+        <button class="refresh-btn" onclick="checkConnection()">🔄 Check Connection</button>
+        <button class="refresh-btn" onclick="location.reload()">🔄 Refresh Page</button>
+    </div>
+
+    <script>
+        let tvId = '{{ tv_id }}';
+        let checkInterval;
+        
+        // Check connection status every 5 seconds
+        function startConnectionCheck() {
+            checkInterval = setInterval(checkConnection, 5000);
+        }
+        
+        // Check if TV is linked to a match
+        async function checkConnection() {
+            try {
+                const response = await fetch(`/api/match-status/${tvId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    // TV is linked to a match
+                    updateStatus('linked', '✅ Connected to iPhone app - Match in progress');
+                    clearInterval(checkInterval);
+                    
+                    // Redirect to match display after 2 seconds
+                    setTimeout(() => {
+                        window.location.href = `/tv/${tvId}`;
+                    }, 2000);
+                }
+            } catch (error) {
+                console.log('TV not yet linked to a match');
+            }
+        }
+        
+        function updateStatus(type, message) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status ${type}`;
+            statusEl.textContent = message;
+        }
+        
+        // Start checking for connections
+        startConnectionCheck();
+        
+        // Also check immediately
+        checkConnection();
+    </script>
+</body>
+</html>

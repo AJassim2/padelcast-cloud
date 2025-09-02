@@ -4,8 +4,8 @@ struct ContentView: View {
     @StateObject private var connectivityManager = WatchConnectivityManager.shared
     
     // Game state properties from iPhone
-    @State private var team1Name = "Team 1"
-    @State private var team2Name = "Team 2"
+    @State private var team1Name = "Blue Team"
+    @State private var team2Name = "Red Team"
     @State private var currentGameScore1 = "0"
     @State private var currentGameScore2 = "0"
     @State private var team1Sets = 0
@@ -17,27 +17,25 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 16) {
-                    // Header
-                    headerSection
+            VStack(spacing: 8) {
+                // Header
+                headerSection
+                
+                // Game status
+                if isMatchFinished {
+                    matchFinishedSection
+                } else {
+                    // Add Point buttons
+                    addPointButtons
                     
-                    // Game status
-                    if isMatchFinished {
-                        matchFinishedSection
-                    } else {
-                        // Add Point buttons
-                        addPointButtons
-                        
-                        // Remove Point buttons
-                        removePointButtons
-                    }
-                    
-                    // Connectivity status
-                    connectivityStatus
+                    // Remove Point buttons
+                    removePointButtons
                 }
-                .padding()
+                
+                // Connectivity status
+                connectivityStatus
             }
+            .padding()
         }
         .onReceive(connectivityManager.$gameData) { gameData in
             updateGameState(from: gameData)
@@ -53,40 +51,32 @@ struct ContentView: View {
             Text("Padel Score")
                 .font(.title3)
                 .fontWeight(.semibold)
-            
-            Text("Watch Controller")
-                .font(.caption)
-                .foregroundColor(.secondary)
         }
     }
     
     // MARK: - Add Point Buttons
     private var addPointButtons: some View {
-        VStack(spacing: 12) {
-            Text("Add Point")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            HStack(spacing: 16) {
+        HStack(spacing: 16) {
                 // Team 1 Add Point Button
                 Button(action: {
                     print("🎾 Watch: Team 1 scored a point!")
                     connectivityManager.sendScorePoint(team: 1)
                 }) {
-                    VStack(spacing: 6) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title)
-                            .foregroundColor(.white)
-                        
-                        Text(team1Name)
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundColor(.white)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.8)
-                    }
+                                    VStack(spacing: 4) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title)
+                        .foregroundColor(.white)
+                    
+                    Text(team1Name)
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .truncationMode(.tail)
+                }
                     .frame(maxWidth: .infinity)
-                    .frame(height: 60)
+                    .frame(height: 55)
                     .background(Color.blue)
                     .cornerRadius(12)
                 }
@@ -96,54 +86,50 @@ struct ContentView: View {
                     print("🎾 Watch: Team 2 scored a point!")
                     connectivityManager.sendScorePoint(team: 2)
                 }) {
-                    VStack(spacing: 6) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title)
-                            .foregroundColor(.white)
-                        
-                        Text(team2Name)
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundColor(.white)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.8)
-                    }
+                                    VStack(spacing: 4) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title)
+                        .foregroundColor(.white)
+                    
+                    Text(team2Name)
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .truncationMode(.tail)
+                }
                     .frame(maxWidth: .infinity)
-                    .frame(height: 60)
+                    .frame(height: 55)
                     .background(Color.red)
                     .cornerRadius(12)
                 }
             }
-        }
     }
     
     // MARK: - Remove Point Buttons
     private var removePointButtons: some View {
-        VStack(spacing: 12) {
-            Text("Remove Point")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            HStack(spacing: 16) {
+        HStack(spacing: 16) {
                 // Team 1 Remove Point Button
                 Button(action: {
                     print("🎾 Watch: Team 1 point removed!")
                     connectivityManager.sendRemovePoint(team: 1)
                 }) {
-                    VStack(spacing: 6) {
-                        Image(systemName: "minus.circle.fill")
-                            .font(.title)
-                            .foregroundColor(.white)
-                        
-                        Text(team1Name)
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundColor(.white)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.8)
-                    }
+                                    VStack(spacing: 4) {
+                    Image(systemName: "minus.circle.fill")
+                        .font(.title)
+                        .foregroundColor(.white)
+                    
+                    Text(team1Name)
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .truncationMode(.tail)
+                }
                     .frame(maxWidth: .infinity)
-                    .frame(height: 60)
+                    .frame(height: 55)
                     .background(Color.blue.opacity(0.7))
                     .cornerRadius(12)
                 }
@@ -153,25 +139,25 @@ struct ContentView: View {
                     print("🎾 Watch: Team 2 point removed!")
                     connectivityManager.sendRemovePoint(team: 2)
                 }) {
-                    VStack(spacing: 6) {
-                        Image(systemName: "minus.circle.fill")
-                            .font(.title)
-                            .foregroundColor(.white)
-                        
-                        Text(team2Name)
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .foregroundColor(.white)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.8)
-                    }
+                                    VStack(spacing: 4) {
+                    Image(systemName: "minus.circle.fill")
+                        .font(.title)
+                        .foregroundColor(.white)
+                    
+                    Text(team2Name)
+                        .font(.caption2)
+                        .fontWeight(.medium)
+                        .foregroundColor(.white)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .truncationMode(.tail)
+                }
                     .frame(maxWidth: .infinity)
-                    .frame(height: 60)
+                    .frame(height: 55)
                     .background(Color.red.opacity(0.7))
                     .cornerRadius(12)
                 }
             }
-        }
     }
     
     // MARK: - Match Finished Section
@@ -210,13 +196,21 @@ struct ContentView: View {
     private func updateGameState(from gameData: [String: Any]?) {
         guard let data = gameData else { return }
         
-        print("Updating Watch UI with game data: \(data)")
+        print("📱 Watch: Updating UI with game data: \(data)")
+        print("📱 Watch: team1Name in data: \(data["team1Name"] ?? "NOT FOUND")")
+        print("📱 Watch: team2Name in data: \(data["team2Name"] ?? "NOT FOUND")")
         
         if let team1 = data["team1Name"] as? String {
+            print("📱 Watch: Setting team1Name to: \(team1)")
             team1Name = team1
+        } else {
+            print("📱 Watch: team1Name not found or not a string")
         }
         if let team2 = data["team2Name"] as? String {
+            print("📱 Watch: Setting team2Name to: \(team2)")
             team2Name = team2
+        } else {
+            print("📱 Watch: team2Name not found or not a string")
         }
         if let score1 = data["currentGameScore1"] as? String {
             currentGameScore1 = score1

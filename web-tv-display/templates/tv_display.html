@@ -252,6 +252,84 @@
             color: #bdc3c7;
         }
         
+        /* Reset Section */
+        .reset-section {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .reset-container {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 3px solid #e74c3c;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        
+        .reset-container h3 {
+            color: #e74c3c;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .reset-container p {
+            color: #ecf0f1;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .reset-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .reset-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 150px;
+        }
+        
+        .reset-btn.yes {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+        
+        .reset-btn.yes:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+        }
+        
+        .reset-btn.no {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            color: #ecf0f1;
+            color: white;
+        }
+        
+        .reset-btn.no:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
+        }
+        
         /* Connection Status */
         .connection-status {
             position: fixed;
@@ -433,16 +511,30 @@
                 <span>Last updated: <span id="lastUpdated">-</span></span>
             </div>
         </div>
+        
+        <!-- Reset Section (shown after match ends) -->
+        <div class="reset-section" id="resetSection" style="display: none;">
+            <div class="reset-container">
+                <h3>🏆 Match Complete!</h3>
+                <p>Would you like to reset the TV display and generate a new QR code for the next match?</p>
+                <div class="reset-buttons">
+                    <button class="reset-btn yes" onclick="resetTV()">Yes, Reset TV</button>
+                    <button class="reset-btn no" onclick="hideResetSection()">No, Keep Current</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
+        const tvId = '{{ tv_id }}';
         const code = '{{ code }}';
         const bestOfSets = parseInt('{{ best_of_sets }}');
+        
         const socket = io();
         
         // Set CSS grid template columns dynamically
-        function setGridColumns() {
-            const gridTemplateColumns = `2fr 1fr ${'1fr '.repeat(bestOfSets)}`.trim();
+        function setGridColumns(totalSets) {
+            const gridTemplateColumns = `2fr 1fr ${'1fr '.repeat(totalSets)}`.trim();
             document.documentElement.style.setProperty('--grid-columns', gridTemplateColumns);
             
             const header = document.getElementById('scoreboardHeader');
@@ -453,7 +545,7 @@
         }
         
         // Set grid columns when page loads
-        document.addEventListener('DOMContentLoaded', setGridColumns);
+        document.addEventListener('DOMContentLoaded', () => setGridColumns(bestOfSets));
         
         // Connection status
         const connectionStatus = document.getElementById('connectionStatus');
@@ -462,7 +554,7 @@
         socket.on('connect', function() {
             statusText.textContent = 'Connected';
             connectionStatus.className = 'connection-status connected';
-            socket.emit('join', { code: code });
+            socket.emit('join', { tv_id: tvId });
         });
         
         socket.on('disconnect', function() {
@@ -494,8 +586,7 @@
             updateScore('team1GameScore', data.team1_game_score);
             updateScore('team2GameScore', data.team2_game_score);
             
-            // Update set scores dynamically
-            const bestOfSets = data.best_of_sets || 5;
+            // Update set scores
             for (let i = 1; i <= bestOfSets; i++) {
                 updateScore(`team1Set${i}`, data[`team1_set${i}_games`] || 0);
                 updateScore(`team2Set${i}`, data[`team2_set${i}_games`] || 0);
@@ -518,6 +609,9 @@
             // Update last updated time
             const lastUpdated = new Date(data.last_updated);
             document.getElementById('lastUpdated').textContent = lastUpdated.toLocaleTimeString();
+            
+            // Check if match is finished and show reset option
+            checkMatchFinished(data);
         }
         
         function updateScore(elementId, newValue) {
@@ -534,7 +628,7 @@
         // Load initial data
         async function loadInitialData() {
             try {
-                const response = await fetch(`/api/match-status/${code}`);
+                const response = await fetch(`/api/match-status/${tvId}`);
                 const data = await response.json();
                 
                 if (data.success) {
@@ -552,6 +646,49 @@
         
         // Auto-refresh every 30 seconds as backup
         setInterval(loadInitialData, 30000);
+        
+        // Reset TV functionality
+        function showResetSection() {
+            document.getElementById('resetSection').style.display = 'flex';
+        }
+        
+        function hideResetSection() {
+            document.getElementById('resetSection').style.display = 'none';
+        }
+        
+        async function resetTV() {
+            try {
+                const response = await fetch(`/api/reset-tv/${tvId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Redirect to new TV setup page
+                    window.location.href = `/tv/${data.new_tv_id}`;
+                } else {
+                    console.error('Error resetting TV:', data.error);
+                    alert('Error resetting TV. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error resetting TV:', error);
+                alert('Error resetting TV. Please try again.');
+            }
+        }
+        
+        // Check if match is finished and show reset option
+        function checkMatchFinished(data) {
+            if (data.is_match_finished) {
+                // Show reset section after 5 seconds
+                setTimeout(() => {
+                    showResetSection();
+                }, 5000);
+            }
+        }
     </script>
 </body>
 </html>

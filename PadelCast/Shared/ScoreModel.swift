@@ -2,8 +2,8 @@ import Foundation
 
 class PadelGame: ObservableObject {
     // Team names
-    @Published var team1Name = "Team 1"
-    @Published var team2Name = "Team 2"
+    @Published var team1Name = "Blue Team"
+    @Published var team2Name = "Red Team"
     
     // Player names
     @Published var team1Player1 = "Player 1"
@@ -15,23 +15,15 @@ class PadelGame: ObservableObject {
     @Published var team1GameScore = 0
     @Published var team2GameScore = 0
     
-    // Games won in each set (Set 1, Set 2, Set 3, Set 4, Set 5)
-    @Published var team1Set1Games = 0
-    @Published var team2Set1Games = 0
-    @Published var team1Set2Games = 0
-    @Published var team2Set2Games = 0
-    @Published var team1Set3Games = 0
-    @Published var team2Set3Games = 0
-    @Published var team1Set4Games = 0
-    @Published var team2Set4Games = 0
-    @Published var team1Set5Games = 0
-    @Published var team2Set5Games = 0
+    // Games won in each set - dynamic array to handle any number of sets
+    @Published var team1SetGames: [Int] = []
+    @Published var team2SetGames: [Int] = []
     
-    // Current set being played (1-5)
+    // Current set being played (1-9)
     @Published var currentSet = 1
     
     // Match settings
-    @Published var bestOfSets = 3 // Best of 3 or 5 sets
+    @Published var bestOfSets = 3 // Best of 3, 5, or 9 sets
     @Published var courtNumber = "1" // Court number for display
     @Published var championshipName = "PADELCAST CHAMPIONSHIP" // Championship name for display
     @Published var courtLogoData: Data? = nil // Court logo image data
@@ -117,50 +109,23 @@ class PadelGame: ObservableObject {
     private func winGame(for team: Int) {
         print("🎾 winGame called for team \(team) in set \(currentSet)")
         
-        // Add game to current set
-        switch currentSet {
-        case 1:
-            if team == 1 {
-                team1Set1Games += 1
-                print("🎾 Team 1 won game in Set 1. New score: \(team1Set1Games)")
-            } else {
-                team2Set1Games += 1
-                print("🎾 Team 2 won game in Set 1. New score: \(team2Set1Games)")
-            }
-        case 2:
-            if team == 1 {
-                team1Set2Games += 1
-                print("🎾 Team 1 won game in Set 2. New score: \(team1Set2Games)")
-            } else {
-                team2Set2Games += 1
-                print("🎾 Team 2 won game in Set 2. New score: \(team2Set2Games)")
-            }
-        case 3:
-            if team == 1 {
-                team1Set3Games += 1
-                print("🎾 Team 1 won game in Set 3. New score: \(team1Set3Games)")
-            } else {
-                team2Set3Games += 1
-                print("🎾 Team 2 won game in Set 3. New score: \(team2Set3Games)")
-            }
-        case 4:
-            if team == 1 {
-                team1Set4Games += 1
-                print("🎾 Team 1 won game in Set 4. New score: \(team1Set4Games)")
-            } else {
-                team2Set4Games += 1
-                print("🎾 Team 2 won game in Set 4. New score: \(team2Set4Games)")
-            }
-        case 5:
-            if team == 1 {
-                team1Set5Games += 1
-                print("🎾 Team 1 won game in Set 5. New score: \(team1Set5Games)")
-            } else {
-                team2Set5Games += 1
-                print("🎾 Team 2 won game in Set 5. New score: \(team2Set5Games)")
-            }
-        default:
-            break
+        // Ensure arrays are large enough for current set
+        while team1SetGames.count < currentSet {
+            team1SetGames.append(0)
+        }
+        while team2SetGames.count < currentSet {
+            team2SetGames.append(0)
+        }
+        
+        // Add game to current set (arrays are 0-indexed, so subtract 1)
+        let setIndex = currentSet - 1
+        
+        if team == 1 {
+            team1SetGames[setIndex] += 1
+            print("🎾 Team 1 won game in Set \(currentSet). New score: \(team1SetGames[setIndex])")
+        } else {
+            team2SetGames[setIndex] += 1
+            print("🎾 Team 2 won game in Set \(currentSet). New score: \(team2SetGames[setIndex])")
         }
         
         // Reset game score
@@ -208,17 +173,43 @@ class PadelGame: ObservableObject {
     }
     
     private func checkMatchWin() {
-        let setsToWin = (bestOfSets + 1) / 2 // 2 for best of 3, 3 for best of 5
-        
         let team1SetsWon = countSetsWon(for: 1)
         let team2SetsWon = countSetsWon(for: 2)
         
-        if team1SetsWon >= setsToWin {
+        // Calculate the minimum sets needed to win
+        let setsToWin = (bestOfSets + 1) / 2
+        
+        // Check if either team has reached the required number of sets to win
+        // AND if the other team cannot catch up even if they win all remaining sets
+        let remainingSets = bestOfSets - currentSet + 1
+        
+        // Team 1 wins if they have enough sets AND Team 2 cannot catch up
+        if team1SetsWon >= setsToWin && (team1SetsWon - team2SetsWon) > remainingSets {
             isMatchFinished = true
             winningTeam = 1
-        } else if team2SetsWon >= setsToWin {
+            print("🏆 Team 1 wins the match! Final score: \(team1SetsWon) - \(team2SetsWon)")
+        }
+        // Team 2 wins if they have enough sets AND Team 1 cannot catch up
+        else if team2SetsWon >= setsToWin && (team2SetsWon - team1SetsWon) > remainingSets {
             isMatchFinished = true
             winningTeam = 2
+            print("🏆 Team 2 wins the match! Final score: \(team1SetsWon) - \(team2SetsWon)")
+        }
+        
+        // If we've played all sets and there's a clear winner
+        if currentSet > bestOfSets && !isMatchFinished {
+            if team1SetsWon > team2SetsWon {
+                isMatchFinished = true
+                winningTeam = 1
+                print("🏆 Team 1 wins after all sets! Final score: \(team1SetsWon) - \(team2SetsWon)")
+            } else if team2SetsWon > team1SetsWon {
+                isMatchFinished = true
+                winningTeam = 2
+                print("🏆 Team 2 wins after all sets! Final score: \(team1SetsWon) - \(team2SetsWon)")
+            } else {
+                // This would be a tie, which shouldn't happen in best of N
+                print("⚠️ Unexpected tie after all sets: \(team1SetsWon) - \(team2SetsWon)")
+            }
         }
     }
     
@@ -226,44 +217,31 @@ class PadelGame: ObservableObject {
         var setsWon = 0
         
         // Count sets won by checking which team has more games in each set
-        if team1Set1Games > team2Set1Games { setsWon += team == 1 ? 1 : 0 }
-        else if team2Set1Games > team1Set1Games { setsWon += team == 2 ? 1 : 0 }
+        // Only count sets as won when a team reaches 6+ games and has more games than the other team
+        let maxSets = max(team1SetGames.count, team2SetGames.count)
         
-        if team1Set2Games > team2Set2Games { setsWon += team == 1 ? 1 : 0 }
-        else if team2Set2Games > team1Set2Games { setsWon += team == 2 ? 1 : 0 }
-        
-        if team1Set3Games > team2Set3Games { setsWon += team == 1 ? 1 : 0 }
-        else if team2Set3Games > team1Set3Games { setsWon += team == 2 ? 1 : 0 }
-        
-        if team1Set4Games > team2Set4Games { setsWon += team == 1 ? 1 : 0 }
-        else if team2Set4Games > team1Set4Games { setsWon += team == 2 ? 1 : 0 }
-        
-        if team1Set5Games > team2Set5Games { setsWon += team == 1 ? 1 : 0 }
-        else if team2Set5Games > team1Set5Games { setsWon += team == 2 ? 1 : 0 }
+        for setIndex in 0..<maxSets {
+            let team1Games = setIndex < team1SetGames.count ? team1SetGames[setIndex] : 0
+            let team2Games = setIndex < team2SetGames.count ? team2SetGames[setIndex] : 0
+            
+            if team1Games >= 6 && team1Games > team2Games {
+                setsWon += team == 1 ? 1 : 0
+            } else if team2Games >= 6 && team2Games > team1Games {
+                setsWon += team == 2 ? 1 : 0
+            }
+        }
         
         return setsWon
     }
     
     private func getTeam1GamesForSet(_ set: Int) -> Int {
-        switch set {
-        case 1: return team1Set1Games
-        case 2: return team1Set2Games
-        case 3: return team1Set3Games
-        case 4: return team1Set4Games
-        case 5: return team1Set5Games
-        default: return 0
-        }
+        let setIndex = set - 1 // Convert to 0-based index
+        return setIndex < team1SetGames.count ? team1SetGames[setIndex] : 0
     }
     
     private func getTeam2GamesForSet(_ set: Int) -> Int {
-        switch set {
-        case 1: return team2Set1Games
-        case 2: return team2Set2Games
-        case 3: return team2Set3Games
-        case 4: return team2Set4Games
-        case 5: return team2Set5Games
-        default: return 0
-        }
+        let setIndex = set - 1 // Convert to 0-based index
+        return setIndex < team2SetGames.count ? team2SetGames[setIndex] : 0
     }
     
     // MARK: - Utility Methods
@@ -271,21 +249,15 @@ class PadelGame: ObservableObject {
     func resetMatch() {
         team1GameScore = 0
         team2GameScore = 0
-        team1Set1Games = 0
-        team2Set1Games = 0
-        team1Set2Games = 0
-        team2Set2Games = 0
-        team1Set3Games = 0
-        team2Set3Games = 0
-        team1Set4Games = 0
-        team2Set4Games = 0
-        team1Set5Games = 0
-        team2Set5Games = 0
         currentSet = 1
         isMatchFinished = false
         winningTeam = nil
         isDeuce = false
         advantageTeam = nil
+        
+        // Reset all set games arrays
+        team1SetGames.removeAll()
+        team2SetGames.removeAll()
     }
     
     func resetGame() {
@@ -322,19 +294,11 @@ class PadelGame: ObservableObject {
     
     // Get games for a specific set
     func getGamesForSet(_ set: Int, team: Int) -> Int {
-        switch set {
-        case 1:
-            return team == 1 ? team1Set1Games : team2Set1Games
-        case 2:
-            return team == 1 ? team1Set2Games : team2Set2Games
-        case 3:
-            return team == 1 ? team1Set3Games : team2Set3Games
-        case 4:
-            return team == 1 ? team1Set4Games : team2Set4Games
-        case 5:
-            return team == 1 ? team1Set5Games : team2Set5Games
-        default:
-            return 0
+        let setIndex = set - 1 // Convert to 0-based index
+        if team == 1 {
+            return setIndex < team1SetGames.count ? team1SetGames[setIndex] : 0
+        } else {
+            return setIndex < team2SetGames.count ? team2SetGames[setIndex] : 0
         }
     }
     

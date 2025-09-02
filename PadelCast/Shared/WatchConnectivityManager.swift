@@ -46,6 +46,10 @@ class WatchConnectivityManager: NSObject, ObservableObject {
             print("Watch not reachable - attempting to send anyway (might be simulator)")
         }
         
+        print("📱 iPhone: Sending game state to Watch")
+        print("📱 iPhone: team1Name = '\(game.team1Name)'")
+        print("📱 iPhone: team2Name = '\(game.team2Name)'")
+        
         let gameData: [String: Any] = [
             "action": "gameState",
             "team1Name": game.team1Name,
@@ -56,16 +60,8 @@ class WatchConnectivityManager: NSObject, ObservableObject {
             "team2Player2": game.team2Player2,
             "team1GameScore": game.team1GameScore,
             "team2GameScore": game.team2GameScore,
-            "team1Set1Games": game.team1Set1Games,
-            "team2Set1Games": game.team2Set1Games,
-            "team1Set2Games": game.team1Set2Games,
-            "team2Set2Games": game.team2Set2Games,
-            "team1Set3Games": game.team1Set3Games,
-            "team2Set3Games": game.team2Set3Games,
-            "team1Set4Games": game.team1Set4Games,
-            "team2Set4Games": game.team2Set4Games,
-            "team1Set5Games": game.team1Set5Games,
-            "team2Set5Games": game.team2Set5Games,
+            "team1SetGames": game.team1SetGames,
+            "team2SetGames": game.team2SetGames,
             "currentSet": game.currentSet,
             "bestOfSets": game.bestOfSets,
             "isMatchFinished": game.isMatchFinished,
@@ -100,16 +96,8 @@ class WatchConnectivityManager: NSObject, ObservableObject {
             "team": team,
             "team1GameScore": gameState.team1GameScore,
             "team2GameScore": gameState.team2GameScore,
-            "team1Set1Games": gameState.team1Set1Games,
-            "team2Set1Games": gameState.team2Set1Games,
-            "team1Set2Games": gameState.team1Set2Games,
-            "team2Set2Games": gameState.team2Set2Games,
-            "team1Set3Games": gameState.team1Set3Games,
-            "team2Set3Games": gameState.team2Set3Games,
-            "team1Set4Games": gameState.team1Set4Games,
-            "team2Set4Games": gameState.team2Set4Games,
-            "team1Set5Games": gameState.team1Set5Games,
-            "team2Set5Games": gameState.team2Set5Games,
+            "team1SetGames": gameState.team1SetGames,
+            "team2SetGames": gameState.team2SetGames,
             "currentSet": gameState.currentSet,
             "isMatchFinished": gameState.isMatchFinished,
             "winningTeam": gameState.winningTeam ?? -1,
