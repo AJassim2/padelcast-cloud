@@ -220,7 +220,7 @@
                         <div class="qr-manual">
                             <strong>Manual Connection:</strong><br>
                             TV ID: <code>{{ tv_id }}</code><br>
-                            Server: <code>{{ qr_data.server_url }}</code>
+                            Server: <code>{{ qr_data.server_url if qr_data else 'Unknown' }}</code>
                         </div>
                         <button class="refresh-btn" onclick="location.reload()">🔄 Retry QR Generation</button>
                     </div>

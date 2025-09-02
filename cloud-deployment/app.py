@@ -127,7 +127,12 @@ def convert_tennis_score(points):
 @app.route('/')
 def index():
     """Main page - now shows TV setup instructions"""
-    return render_template('tv_setup.html')
+    # Generate TV session for the main page
+    tv_id, qr_base64, qr_data = generate_tv_session()
+    return render_template('tv_setup.html', 
+                         tv_id=tv_id, 
+                         qr_code=qr_base64, 
+                         qr_data=qr_data)
 
 @app.route('/tv')
 def tv_setup():
