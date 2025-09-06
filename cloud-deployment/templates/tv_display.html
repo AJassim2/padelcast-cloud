@@ -71,6 +71,13 @@
             color: #ecf0f1;
         }
         
+        .match-format {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #f39c12;
+            margin-top: 4px;
+        }
+        
         .match-type {
             font-size: 1.2rem;
             color: #bdc3c7;
@@ -454,6 +461,7 @@
                 {% endif %}
                 <div>
                     <div class="tournament-name">{{ championship_name }}</div>
+                    <div class="match-format" id="matchFormat">{{ match_format }}</div>
                 </div>
             </div>
         </div>
@@ -529,6 +537,7 @@
         const tvId = '{{ tv_id }}';
         const code = '{{ code }}';
         const bestOfSets = parseInt('{{ best_of_sets }}');
+        const matchFormat = '{{ match_format }}';
         
         const socket = io();
         
@@ -576,6 +585,11 @@
             document.getElementById('team1Name').textContent = data.team1_name;
             document.getElementById('team2Name').textContent = data.team2_name;
             
+            // Update match format
+            if (data.match_format) {
+                document.getElementById('matchFormat').textContent = data.match_format;
+            }
+            
             // Update player names
             if (data.team1_player1) document.getElementById('team1Player1').textContent = data.team1_player1;
             if (data.team1_player2) document.getElementById('team1Player2').textContent = data.team1_player2;
@@ -590,6 +604,25 @@
             for (let i = 1; i <= bestOfSets; i++) {
                 updateScore(`team1Set${i}`, data[`team1_set${i}_games`] || 0);
                 updateScore(`team2Set${i}`, data[`team2_set${i}_games`] || 0);
+            }
+            
+            // Handle super tie-break display
+            if (data.is_super_tiebreak) {
+                // Show super tie-break scores instead of regular game scores
+                updateScore('team1GameScore', data.super_tiebreak_score1 || 0);
+                updateScore('team2GameScore', data.super_tiebreak_score2 || 0);
+                
+                // Update the points column header to show "Super TB"
+                const pointsHeader = document.querySelector('.scoreboard-header div:nth-child(2)');
+                if (pointsHeader) {
+                    pointsHeader.textContent = 'SUPER TB';
+                }
+            } else {
+                // Reset points header to normal
+                const pointsHeader = document.querySelector('.scoreboard-header div:nth-child(2)');
+                if (pointsHeader) {
+                    pointsHeader.textContent = 'POINTS';
+                }
             }
             
             // Update match status

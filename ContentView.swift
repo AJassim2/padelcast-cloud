@@ -2,7 +2,7 @@ import SwiftUI
 import AVKit
 import MediaPlayer
 import PhotosUI
-import VisionKit
+import AudioToolbox
 
 // MARK: - TV Streaming View
 struct TVStreamingView: View {
@@ -195,13 +195,19 @@ struct TVMatchProgressView: View {
                 .shadow(color: .black.opacity(0.5), radius: 5, x: 0, y: 2)
             
             HStack(spacing: 30) {
-                Text("Best of \(game.bestOfSets) Sets")
+                Text(game.matchFormat.displayName)
                     .font(.system(size: 20, weight: .medium, design: .rounded))
                     .foregroundColor(.white.opacity(0.9))
                 
-                Text("Set \(game.currentSet) of \(game.bestOfSets)")
-                    .font(.system(size: 20, weight: .medium, design: .rounded))
-                    .foregroundColor(.yellow)
+                if game.isSuperTiebreak {
+                    Text("Super Tie-break")
+                        .font(.system(size: 20, weight: .medium, design: .rounded))
+                        .foregroundColor(.yellow)
+                } else {
+                    Text("Set \(game.currentSet) of \(game.bestOfSets)")
+                        .font(.system(size: 20, weight: .medium, design: .rounded))
+                        .foregroundColor(.yellow)
+                }
             }
         }
         .padding(.horizontal, 40)
@@ -364,6 +370,7 @@ struct ContentView: View {
     @State private var showingEndMatchAlert = false
     @State private var showingTVCodeInput = false
     @State private var tvCode = ""
+    @State private var tvId = "" // Store the scanned TV ID from QR code
     @State private var showingTVCodeAlert = false
     @State private var tvCodeAlertMessage = ""
     @State private var customBestOf = ""
@@ -456,7 +463,7 @@ struct ContentView: View {
             Text(tvCodeAlertMessage)
         }
         .sheet(isPresented: $showingTVCodeInput) {
-            TVCodeInputView(tvCode: $tvCode, onCodeSaved: {
+            TVCodeInputView(tvCode: $tvCode, mainTVId: $tvId, onCodeSaved: {
                 fetchMatchDataFromWebServer()
             })
         }
@@ -466,13 +473,19 @@ struct ContentView: View {
     
     // MARK: - Web Server Communication
     private func sendUpdateToWebServer() {
-        guard !tvCode.isEmpty else { return }
+        // Use the scanned TV ID from QR code, or fall back to tvCode for backward compatibility
+        let targetTVId = tvId.isEmpty ? tvCode : tvId
+        print("🔗 Using TV ID for update: \(targetTVId) (scanned: \(tvId), fallback: \(tvCode))")
+        guard !targetTVId.isEmpty else { 
+            print("❌ No TV ID available for update")
+            return 
+        }
         
         let useCloud = UserDefaults.standard.bool(forKey: "useCloud")
         
         if useCloud {
             // Use cloud service
-            let cloudURL = UserDefaults.standard.string(forKey: "cloudURL") ?? "http://localhost:8080"
+            let cloudURL = UserDefaults.standard.string(forKey: "cloudURL") ?? "https://padelcast-production.up.railway.app"
             
             Task {
                 do {
@@ -494,15 +507,23 @@ struct ContentView: View {
                         matchData["set\(i)_games"] = [team1Games, team2Games]
                     }
                     
-                    print("📱 iPhone sending to cloud (Best of \(game.bestOfSets), Current Set: \(game.currentSet)):")
+                    // Add super tie-break data if applicable
+                    if game.isSuperTiebreak {
+                        matchData["super_tiebreak_score"] = [game.superTiebreakScore1, game.superTiebreakScore2]
+                    }
+                    
+                    print("📱 iPhone sending to cloud (\(game.matchFormat.displayName), Current Set: \(game.currentSet)):")
                     for i in 1...game.bestOfSets {
                         let team1Games = game.getGamesForSet(i, team: 1)
                         let team2Games = game.getGamesForSet(i, team: 2)
                         print("   Set \(i): [\(team1Games), \(team2Games)]")
                     }
+                    if game.isSuperTiebreak {
+                        print("   Super Tie-break: [\(game.superTiebreakScore1), \(game.superTiebreakScore2)]")
+                    }
                     print("   Current Set: \(game.currentSet)")
                     
-                    try await cloudService.updateMatch(code: tvCode, matchData: matchData)
+                    try await cloudService.updateMatch(tvId: targetTVId, matchData: matchData)
                     print("✅ Successfully sent update to cloud server")
                 } catch {
                     print("❌ Error sending update to cloud server: \(error)")
@@ -520,7 +541,7 @@ struct ContentView: View {
             request.timeoutInterval = 5.0 // 5 second timeout for faster response
             
             var data: [String: Any] = [
-                "code": tvCode,
+                "code": targetTVId,
                 "team1_name": game.team1Name,
                 "team2_name": game.team2Name,
                 "team1_game_score": game.team1GameScore,
@@ -537,11 +558,19 @@ struct ContentView: View {
                 data["set\(i)_games"] = [team1Games, team2Games]
             }
             
-            print("📱 iPhone sending to local server (Best of \(game.bestOfSets), Current Set: \(game.currentSet)):")
+            // Add super tie-break data if applicable
+            if game.isSuperTiebreak {
+                data["super_tiebreak_score"] = [game.superTiebreakScore1, game.superTiebreakScore2]
+            }
+            
+            print("📱 iPhone sending to local server (\(game.matchFormat.displayName), Current Set: \(game.currentSet)):")
             for i in 1...game.bestOfSets {
                 let team1Games = game.getGamesForSet(i, team: 1)
                 let team2Games = game.getGamesForSet(i, team: 2)
                 print("   Set \(i): [\(team1Games), \(team2Games)]")
+            }
+            if game.isSuperTiebreak {
+                print("   Super Tie-break: [\(game.superTiebreakScore1), \(game.superTiebreakScore2)]")
             }
             print("   Current Set: \(game.currentSet)")
             
@@ -572,17 +601,23 @@ struct ContentView: View {
     
     // MARK: - Fetch Match Data from Web Server
     private func fetchMatchDataFromWebServer() {
-        guard !tvCode.isEmpty else { return }
+        // Use the scanned TV ID from QR code, or fall back to tvCode for backward compatibility
+        let targetTVId = tvId.isEmpty ? tvCode : tvId
+        print("🔗 Using TV ID for fetch: \(targetTVId) (scanned: \(tvId), fallback: \(tvCode))")
+        guard !targetTVId.isEmpty else { 
+            print("❌ No TV ID available for fetch")
+            return 
+        }
         
         let useCloud = UserDefaults.standard.bool(forKey: "useCloud")
         
         if useCloud {
             // Use cloud service
-            let cloudURL = UserDefaults.standard.string(forKey: "cloudURL") ?? "http://localhost:8080"
+            let cloudURL = UserDefaults.standard.string(forKey: "cloudURL") ?? "https://padelcast-production.up.railway.app"
             
             Task {
                 do {
-                    let url = URL(string: "\(cloudURL)/api/match-status/\(tvCode)")!
+                    let url = URL(string: "\(cloudURL)/api/match-status/\(targetTVId)")!
                     let (data, _) = try await URLSession.shared.data(from: url)
                     
                     let result = try JSONSerialization.jsonObject(with: data) as? [String: Any]
@@ -614,7 +649,7 @@ struct ContentView: View {
             let serverIP = UserDefaults.standard.string(forKey: "serverIP") ?? "192.168.100.122"
             let serverPort = UserDefaults.standard.string(forKey: "serverPort") ?? "8080"
             
-            let url = URL(string: "http://\(serverIP):\(serverPort)/api/match-status/\(tvCode)")!
+            let url = URL(string: "http://\(serverIP):\(serverPort)/api/match-status/\(targetTVId)")!
             
             URLSession.shared.dataTask(with: url) { data, response, error in
                 if let error = error {
@@ -1163,52 +1198,37 @@ struct PlayerSetupView: View {
                     .foregroundColor(.purple)
                 
                 // Preset options
-                HStack(spacing: 12) {
-                    Button("Best of 3") {
-                        game.setBestOf(3)
-                    }
-                    .buttonStyle(BestOfButtonStyle(isSelected: game.bestOfSets == 3))
-                    
-                    Button("Best of 5") {
-                        game.setBestOf(5)
-                    }
-                    .buttonStyle(BestOfButtonStyle(isSelected: game.bestOfSets == 5))
-                    
-                    Button("Best of 9") {
-                        game.setBestOf(9)
-                    }
-                    .buttonStyle(BestOfButtonStyle(isSelected: game.bestOfSets == 9))
-                }
-                
-                // Custom option
-                HStack {
-                    Text("Custom:")
-                        .font(.subheadline)
-                        .foregroundColor(.purple)
-                    
-                    TextField("Enter number", text: $customBestOf)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .keyboardType(.numberPad)
-                        .frame(width: 100)
-                    
-                    Button("Set") {
-                        if let value = Int(customBestOf), value > 0 {
-                            game.setBestOf(value)
+                VStack(spacing: 12) {
+                    HStack(spacing: 12) {
+                        Button("One Set (6 games)") {
+                            game.setMatchFormat(.oneSet)
                         }
+                        .buttonStyle(BestOfButtonStyle(isSelected: game.matchFormat == .oneSet))
+                        
+                        Button("Pro Set (9 games)") {
+                            game.setMatchFormat(.proSet)
+                        }
+                        .buttonStyle(BestOfButtonStyle(isSelected: game.matchFormat == .proSet))
                     }
-                    .disabled(customBestOf.isEmpty || Int(customBestOf) == nil)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(Color.purple.opacity(0.1))
-                    .foregroundColor(.purple)
-                    .cornerRadius(6)
+                    
+                    HStack(spacing: 12) {
+                        Button("Best of 3 Sets") {
+                            game.setMatchFormat(.bestOf3Sets)
+                        }
+                        .buttonStyle(BestOfButtonStyle(isSelected: game.matchFormat == .bestOf3Sets))
+                        
+                        Button("Best of 3 + Super TB") {
+                            game.setMatchFormat(.bestOf3WithSuperTiebreak)
+                        }
+                        .buttonStyle(BestOfButtonStyle(isSelected: game.matchFormat == .bestOf3WithSuperTiebreak))
+                    }
                 }
                 
-                if game.bestOfSets > 0 {
-                    Text("Selected: Best of \(game.bestOfSets)")
-                        .font(.caption)
-                        .foregroundColor(.purple)
-                }
+                // Selected format display
+                Text("Selected: \(game.matchFormat.displayName)")
+                    .font(.caption)
+                    .foregroundColor(.purple)
+                    .padding(.top, 4)
             }
         }
         .padding(20)
@@ -1336,6 +1356,7 @@ class PadelCastCloudService: ObservableObject {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.timeoutInterval = 10.0 // 10 second timeout for network requests
         
         var data: [String: Any] = [
             "tv_id": tvId,
@@ -1353,13 +1374,26 @@ class PadelCastCloudService: ObservableObject {
         ]
         
         if let logoData = courtLogoData {
-            data["match_data"] = data["match_data"] as? [String: Any] ?? [:]
-            (data["match_data"] as? [String: Any])?["court_logo_data"] = logoData.base64EncodedString()
+            var matchData = data["match_data"] as? [String: Any] ?? [:]
+            matchData["court_logo_data"] = logoData.base64EncodedString()
+            data["match_data"] = matchData
         }
         
         request.httpBody = try JSONSerialization.data(withJSONObject: data)
         
-        let (responseData, _) = try await URLSession.shared.data(for: request)
+        print("🔗 Making request to: \(url)")
+        print("🔗 Request data: \(data)")
+        print("🔗 Sending request...")
+        let (responseData, httpResponse) = try await URLSession.shared.data(for: request)
+        
+        if let httpResponse = httpResponse as? HTTPURLResponse {
+            print("🔗 Response status: \(httpResponse.statusCode)")
+            if httpResponse.statusCode != 200 {
+                print("🔗 Error response: \(String(data: responseData, encoding: .utf8) ?? "Unknown")")
+            }
+        }
+        
+        print("🔗 Response data: \(String(data: responseData, encoding: .utf8) ?? "Unknown")")
         let response = try JSONDecoder().decode(LinkTVResponse.self, from: responseData)
         
         return (response.match_id, response.tv_id)
@@ -1387,51 +1421,172 @@ struct LinkTVResponse: Codable {
     let tv_id: String
 }
 
-// MARK: - QR Code Scanner
+// MARK: - QR Code Scanner (iOS 15.0 Compatible)
 struct QRCodeScannerView: UIViewControllerRepresentable {
     @Binding var scannedTVId: String?
+    @Binding var mainTVId: String // Add binding to main ContentView's tvId
     @Environment(\.presentationMode) var presentationMode
     
-    func makeUIViewController(context: Context) -> DataScannerViewController {
-        let scanner = DataScannerViewController(
-            recognizedDataTypes: [.qr],
-            qualityLevel: .balanced,
-            recognizesMultipleItems: false,
-            isHighFrameRateTrackingEnabled: true,
-            isPinchToZoomEnabled: true
-        )
+    func makeUIViewController(context: Context) -> QRScannerViewController {
+        let scanner = QRScannerViewController()
         scanner.delegate = context.coordinator
         return scanner
     }
     
-    func updateUIViewController(_ uiViewController: DataScannerViewController, context: Context) {}
+    func updateUIViewController(_ uiViewController: QRScannerViewController, context: Context) {}
     
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
     
-    class Coordinator: NSObject, DataScannerViewControllerDelegate {
+    class Coordinator: NSObject, QRScannerDelegate {
         let parent: QRCodeScannerView
         
         init(_ parent: QRCodeScannerView) {
             self.parent = parent
         }
         
-        func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
-            switch item {
-            case .qr(let qrCode):
-                if let payload = qrCode.payloadStringValue {
-                    // Parse the QR code data to extract TV ID
-                    if let data = payload.data(using: .utf8),
-                       let qrData = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-                       let tvId = qrData["tv_id"] as? String {
-                        parent.scannedTVId = tvId
-                        parent.presentationMode.wrappedValue.dismiss()
-                    }
-                }
-            default:
-                break
+        func qrScanner(_ scanner: QRScannerViewController, didScanCode code: String) {
+            // Parse the QR code data to extract TV ID
+            if let data = code.data(using: .utf8),
+               let qrData = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let tvId = qrData["tv_id"] as? String {
+                print("📱 QR Code scanned successfully - TV ID: \(tvId)")
+                parent.scannedTVId = tvId
+                parent.mainTVId = tvId // Also update the main ContentView's tvId
+                parent.presentationMode.wrappedValue.dismiss()
+            } else {
+                print("❌ Failed to parse QR code data: \(code)")
             }
+        }
+        
+        func qrScannerDidFail(_ scanner: QRScannerViewController) {
+            // Handle failure if needed
+        }
+    }
+}
+
+// MARK: - Custom QR Scanner View Controller
+class QRScannerViewController: UIViewController {
+    weak var delegate: QRScannerDelegate?
+    private var captureSession: AVCaptureSession?
+    private var previewLayer: AVCaptureVideoPreviewLayer?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupCamera()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if let captureSession = captureSession, !captureSession.isRunning {
+            captureSession.startRunning()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if let captureSession = captureSession, captureSession.isRunning {
+            captureSession.stopRunning()
+        }
+    }
+    
+    private func setupCamera() {
+        let captureSession = AVCaptureSession()
+        self.captureSession = captureSession
+        
+        guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else {
+            failed()
+            return
+        }
+        
+        let videoInput: AVCaptureDeviceInput
+        
+        do {
+            videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
+        } catch {
+            failed()
+            return
+        }
+        
+        if captureSession.canAddInput(videoInput) {
+            captureSession.addInput(videoInput)
+        } else {
+            failed()
+            return
+        }
+        
+        let metadataOutput = AVCaptureMetadataOutput()
+        
+        if captureSession.canAddOutput(metadataOutput) {
+            captureSession.addOutput(metadataOutput)
+            
+            metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+            metadataOutput.metadataObjectTypes = [.qr]
+        } else {
+            failed()
+            return
+        }
+        
+        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.frame = view.layer.bounds
+        previewLayer.videoGravity = .resizeAspectFill
+        view.layer.addSublayer(previewLayer)
+        self.previewLayer = previewLayer
+        
+        // Add a close button
+        let closeButton = UIButton(type: .system)
+        closeButton.setTitle("✕", for: .normal)
+        closeButton.titleLabel?.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        closeButton.setTitleColor(.white, for: .normal)
+        closeButton.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        closeButton.layer.cornerRadius = 20
+        closeButton.frame = CGRect(x: 20, y: 50, width: 40, height: 40)
+        closeButton.addTarget(self, action: #selector(closeTapped), for: .touchUpInside)
+        view.addSubview(closeButton)
+        
+        // Add instructions label
+        let instructionsLabel = UILabel()
+        instructionsLabel.text = "Point camera at QR code"
+        instructionsLabel.textColor = .white
+        instructionsLabel.textAlignment = .center
+        instructionsLabel.font = UIFont.systemFont(ofSize: 18, weight: .medium)
+        instructionsLabel.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+        instructionsLabel.layer.cornerRadius = 8
+        instructionsLabel.frame = CGRect(x: 20, y: view.bounds.height - 100, width: view.bounds.width - 40, height: 40)
+        instructionsLabel.textAlignment = .center
+        view.addSubview(instructionsLabel)
+        
+        captureSession.startRunning()
+    }
+    
+    @objc private func closeTapped() {
+        dismiss(animated: true)
+    }
+    
+    private func failed() {
+        let ac = UIAlertController(title: "Scanning not supported", message: "Your device does not support scanning a code from an item. Please use a device with a camera.", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        present(ac, animated: true)
+        captureSession = nil
+    }
+}
+
+// MARK: - QR Scanner Delegate
+protocol QRScannerDelegate: AnyObject {
+    func qrScanner(_ scanner: QRScannerViewController, didScanCode code: String)
+    func qrScannerDidFail(_ scanner: QRScannerViewController)
+}
+
+// MARK: - AVCapture Metadata Output Delegate
+extension QRScannerViewController: AVCaptureMetadataOutputObjectsDelegate {
+    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        if let metadataObject = metadataObjects.first {
+            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
+            guard let stringValue = readableObject.stringValue else { return }
+            
+            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            delegate?.qrScanner(self, didScanCode: stringValue)
         }
     }
 }
@@ -1518,12 +1673,13 @@ struct BestOfButtonStyle: ButtonStyle {
 // MARK: - TV Code Input View
 struct TVCodeInputView: View {
     @Binding var tvCode: String
+    @Binding var mainTVId: String // Add binding to main ContentView's tvId
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var game: PadelGame
     @State private var tempCode = ""
     @State private var serverIP = "192.168.100.122"
     @State private var serverPort = "8080"
-    @State private var cloudURL = "http://localhost:8080"
+    @State private var cloudURL = "https://padelcast-production.up.railway.app"
     @State private var useCloud = false
     // Team names removed - will be taken from main game state
     @State private var isGeneratingCode = false
@@ -1624,6 +1780,42 @@ struct TVCodeInputView: View {
                                 Text("TV ID scanned successfully")
                                     .font(.caption2)
                                     .foregroundColor(.secondary)
+                                
+                                Button(action: {
+                                    Task {
+                                        await testConnection()
+                                    }
+                                }) {
+                                    HStack {
+                                        Image(systemName: "wifi")
+                                            .foregroundColor(.white)
+                                        Text("Test Connection")
+                                            .foregroundColor(.white)
+                                            .font(.headline)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 50)
+                                    .background(Color.orange)
+                                    .cornerRadius(12)
+                                }
+                                
+                                Button(action: {
+                                    Task {
+                                        await linkToTVFromQR(tvId: scannedTVId)
+                                    }
+                                }) {
+                                    HStack {
+                                        Image(systemName: "link")
+                                            .foregroundColor(.white)
+                                        Text("Link to TV")
+                                            .foregroundColor(.white)
+                                            .font(.headline)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 50)
+                                    .background(Color.green)
+                                    .cornerRadius(12)
+                                }
                             }
                         }
                         
@@ -1787,7 +1979,7 @@ struct TVCodeInputView: View {
             Text(cloudAlertMessage)
         }
         .sheet(isPresented: $showQRScanner) {
-            QRCodeScannerView(scannedTVId: $scannedTVId)
+            QRCodeScannerView(scannedTVId: $scannedTVId, mainTVId: $mainTVId)
         }
     }
     
@@ -1796,6 +1988,70 @@ struct TVCodeInputView: View {
         // The user should scan the QR code displayed on the TV
         cloudAlertMessage = "Please scan the QR code displayed on your TV to connect automatically."
         showCloudAlert = true
+    }
+    
+    private func testConnection() async {
+        print("🔗 Testing connection to Railway server...")
+        
+        let testURL = "https://padelcast-production.up.railway.app/"
+        
+        do {
+            let url = URL(string: testURL)!
+            let (_, response) = try await URLSession.shared.data(from: url)
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                print("🔗 Connection test successful! Status: \(httpResponse.statusCode)")
+                await MainActor.run {
+                    cloudAlertMessage = "✅ Connection successful! Status: \(httpResponse.statusCode)"
+                    showCloudAlert = true
+                }
+            }
+        } catch {
+            print("❌ Connection test failed: \(error)")
+            await MainActor.run {
+                cloudAlertMessage = "❌ Connection failed: \(error.localizedDescription)"
+                showCloudAlert = true
+            }
+        }
+    }
+    
+    private func linkToTVFromQR(tvId: String) async {
+        isGeneratingCode = true
+        print("🔗 Starting TV linking process for TV ID: \(tvId)")
+        
+        // Force update to use the correct Railway URL
+        let currentCloudURL = "https://padelcast-production.up.railway.app"
+        print("🔗 Using Railway URL: \(currentCloudURL)")
+        
+        Task {
+            do {
+                print("🔗 Creating cloud service with URL: \(currentCloudURL)")
+                let cloudService = PadelCastCloudService(baseURL: currentCloudURL)
+                
+                print("🔗 Calling linkToTV API...")
+                let result = try await cloudService.linkToTV(tvId: tvId, team1: game.team1Name, team2: game.team2Name, bestOfSets: game.bestOfSets, courtNumber: game.courtNumber, championshipName: game.championshipName, courtLogoData: game.courtLogoData, game: game)
+                
+                print("🔗 API call successful! Result: \(result)")
+                
+                await MainActor.run {
+                    generatedTVURL = "\(cloudURL)/tv/\(result.tvId)"
+                    isGeneratingCode = false
+                    cloudAlertMessage = "Successfully linked to TV! The TV will now display your match."
+                    showCloudAlert = true
+                }
+            } catch {
+                print("❌ Error linking to TV: \(error)")
+                if let decodingError = error as? DecodingError {
+                    print("❌ Decoding error details: \(decodingError)")
+                }
+                
+                await MainActor.run {
+                    isGeneratingCode = false
+                    cloudAlertMessage = "Failed to link to TV: \(error.localizedDescription)"
+                    showCloudAlert = true
+                }
+            }
+        }
     }
 }
 

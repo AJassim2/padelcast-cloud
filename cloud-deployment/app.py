@@ -20,7 +20,7 @@ match_codes = {}  # code -> match_id mapping
 tv_sessions = {}  # tv_id -> session_data mapping
 
 class Match:
-    def __init__(self, match_id, team1_name, team2_name, best_of_sets=5, court_number="1", championship_name="PADELCAST CHAMPIONSHIP", court_logo_data=None, team1_player1="Player 1", team1_player2="Player 2", team2_player1="Player 3", team2_player2="Player 4"):
+    def __init__(self, match_id, team1_name, team2_name, best_of_sets=5, court_number="1", championship_name="PADELCAST CHAMPIONSHIP", court_logo_data=None, team1_player1="Player 1", team1_player2="Player 2", team2_player1="Player 3", team2_player2="Player 4", match_format="Best of 3 Sets"):
         self.match_id = match_id
         self.team1_name = team1_name
         self.team2_name = team2_name
@@ -31,6 +31,7 @@ class Match:
         self.team1_game_score = "0"
         self.team2_game_score = "0"
         self.best_of_sets = best_of_sets
+        self.match_format = match_format
         self.court_number = court_number
         self.championship_name = championship_name
         self.court_logo_data = court_logo_data
@@ -44,6 +45,11 @@ class Match:
         
         # Current set being played
         self.current_set = 1
+        
+        # Super tie-break support
+        self.is_super_tiebreak = False
+        self.super_tiebreak_score1 = 0
+        self.super_tiebreak_score2 = 0
         
         self.is_match_finished = False
         self.winning_team = None
@@ -181,6 +187,7 @@ def tv_display(tv_id):
                          team2_player1=match.team2_player1,
                          team2_player2=match.team2_player2,
                          best_of_sets=match.best_of_sets,
+                         match_format=match.match_format,
                          court_number=match.court_number,
                          championship_name=match.championship_name,
                          court_logo_data=match.court_logo_data)
@@ -203,7 +210,8 @@ def link_tv():
     
     team1_name = match_data.get('team1_name', 'Team 1')
     team2_name = match_data.get('team2_name', 'Team 2')
-    best_of_sets = match_data.get('best_of_sets', 5)
+    best_of_sets = match_data.get('best_of_sets', 3)
+    match_format = match_data.get('match_format', 'Best of 3 Sets')
     court_number = match_data.get('court_number', '1')
     championship_name = match_data.get('championship_name', 'PADELCAST CHAMPIONSHIP')
     court_logo_data = match_data.get('court_logo_data')
@@ -214,7 +222,7 @@ def link_tv():
     
     match = Match(match_id, team1_name, team2_name, best_of_sets, court_number, 
                   championship_name, court_logo_data, team1_player1, team1_player2, 
-                  team2_player1, team2_player2)
+                  team2_player1, team2_player2, match_format)
     
     active_matches[match_id] = match
     match_codes[code] = match_id
@@ -317,6 +325,16 @@ def update_match():
                 match.team2_set_games[i] = set_games[1]
                 print(f"📱 Set {i} - Team 1: {match.team1_set_games[i]}, Team 2: {match.team2_set_games[i]}")
     
+    # Update super tie-break data
+    if 'super_tiebreak_score' in data:
+        super_tiebreak_score = data.get('super_tiebreak_score')
+        if super_tiebreak_score is not None:
+            print(f"📱 Processing super tie-break: {super_tiebreak_score}")
+            match.super_tiebreak_score1 = super_tiebreak_score[0]
+            match.super_tiebreak_score2 = super_tiebreak_score[1]
+            match.is_super_tiebreak = True
+            print(f"📱 Super Tie-break - Team 1: {match.super_tiebreak_score1}, Team 2: {match.super_tiebreak_score2}")
+    
     match.current_set = data.get('current_set', match.current_set)
     match.is_match_finished = data.get('is_match_finished', match.is_match_finished)
     match.winning_team = data.get('winning_team', match.winning_team)
@@ -336,7 +354,11 @@ def update_match():
         'is_match_finished': match.is_match_finished,
         'winning_team': match.winning_team,
         'last_updated': match.last_updated.isoformat(),
-        'best_of_sets': match.best_of_sets
+        'best_of_sets': match.best_of_sets,
+        'match_format': match.match_format,
+        'is_super_tiebreak': match.is_super_tiebreak,
+        'super_tiebreak_score1': match.super_tiebreak_score1,
+        'super_tiebreak_score2': match.super_tiebreak_score2
     }
     
     # Add set scores
@@ -393,7 +415,11 @@ def match_status(tv_id):
         'is_match_finished': match.is_match_finished,
         'winning_team': match.winning_team,
         'last_updated': match.last_updated.isoformat(),
-        'best_of_sets': match.best_of_sets
+        'best_of_sets': match.best_of_sets,
+        'match_format': match.match_format,
+        'is_super_tiebreak': match.is_super_tiebreak,
+        'super_tiebreak_score1': match.super_tiebreak_score1,
+        'super_tiebreak_score2': match.super_tiebreak_score2
     }
     
     # Add dynamic set data - include all sets that have been played

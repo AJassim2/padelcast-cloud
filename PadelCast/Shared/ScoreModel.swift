@@ -1,5 +1,49 @@
 import Foundation
 
+enum MatchFormat: String, CaseIterable {
+    case oneSet = "One Set (6 games)"
+    case proSet = "One Set - 9 Games (Pro Set)"
+    case bestOf3Sets = "Best of 3 Sets"
+    case bestOf3WithSuperTiebreak = "Best of 3 with Super Tie-break"
+    
+    var displayName: String {
+        return self.rawValue
+    }
+    
+    var maxSets: Int {
+        switch self {
+        case .oneSet, .proSet:
+            return 1
+        case .bestOf3Sets, .bestOf3WithSuperTiebreak:
+            return 3
+        }
+    }
+    
+    var setsToWin: Int {
+        switch self {
+        case .oneSet, .proSet:
+            return 1
+        case .bestOf3Sets, .bestOf3WithSuperTiebreak:
+            return 2
+        }
+    }
+    
+    var gamesToWinSet: Int {
+        switch self {
+        case .oneSet:
+            return 6
+        case .proSet:
+            return 9
+        case .bestOf3Sets, .bestOf3WithSuperTiebreak:
+            return 6
+        }
+    }
+    
+    var hasSuperTiebreak: Bool {
+        return self == .bestOf3WithSuperTiebreak
+    }
+}
+
 class PadelGame: ObservableObject {
     // Team names
     @Published var team1Name = "Blue Team"
@@ -23,12 +67,17 @@ class PadelGame: ObservableObject {
     @Published var currentSet = 1
     
     // Match settings
-    @Published var bestOfSets = 3 // Best of 3, 5, or 9 sets
+    @Published var matchFormat: MatchFormat = .bestOf3Sets // Match format type
     @Published var courtNumber = "1" // Court number for display
     @Published var championshipName = "PADELCAST CHAMPIONSHIP" // Championship name for display
     @Published var courtLogoData: Data? = nil // Court logo image data
     @Published var isMatchFinished = false
     @Published var winningTeam: Int? = nil // 1 or 2
+    
+    // Super tie-break specific
+    @Published var isSuperTiebreak = false
+    @Published var superTiebreakScore1 = 0
+    @Published var superTiebreakScore2 = 0
     
     // Game state
     @Published var isDeuce = false
@@ -43,6 +92,18 @@ class PadelGame: ObservableObject {
     func scorePoint(for team: Int) {
         guard !isMatchFinished else { return }
         
+        // Handle super tie-break scoring
+        if isSuperTiebreak {
+            if team == 1 {
+                superTiebreakScore1 += 1
+            } else {
+                superTiebreakScore2 += 1
+            }
+            checkSuperTiebreakWin()
+            return
+        }
+        
+        // Regular game scoring
         if team == 1 {
             team1GameScore += 1
         } else {
@@ -55,6 +116,21 @@ class PadelGame: ObservableObject {
     func subtractPoint(for team: Int) {
         guard !isMatchFinished else { return }
         
+        // Handle super tie-break scoring
+        if isSuperTiebreak {
+            if team == 1 {
+                if superTiebreakScore1 > 0 {
+                    superTiebreakScore1 -= 1
+                }
+            } else {
+                if superTiebreakScore2 > 0 {
+                    superTiebreakScore2 -= 1
+                }
+            }
+            return
+        }
+        
+        // Regular game scoring
         if team == 1 {
             if team1GameScore > 0 {
                 team1GameScore -= 1
@@ -141,30 +217,62 @@ class PadelGame: ObservableObject {
         let team1CurrentSetGames = getTeam1GamesForSet(currentSet)
         let team2CurrentSetGames = getTeam2GamesForSet(currentSet)
         
-        // Standard tennis set rules: first to 6 games with 2 game lead
-        if team1CurrentSetGames >= 6 || team2CurrentSetGames >= 6 {
-            let gamesDiff = team1CurrentSetGames - team2CurrentSetGames
-            
-            if abs(gamesDiff) >= 2 {
-                // Set won with 2 game lead
+        let gamesToWin = matchFormat.gamesToWinSet
+        let gamesDiff = team1CurrentSetGames - team2CurrentSetGames
+        
+        // Check for set win conditions based on match format
+        if matchFormat == .proSet {
+            // Pro Set: First to 9 games, tiebreak at 8-8
+            if team1CurrentSetGames >= 9 || team2CurrentSetGames >= 9 {
                 if team1CurrentSetGames > team2CurrentSetGames {
                     winSet(for: 1)
                 } else {
                     winSet(for: 2)
                 }
-            } else if team1CurrentSetGames == 7 || team2CurrentSetGames == 7 {
-                // Tiebreak won
+            } else if team1CurrentSetGames == 8 && team2CurrentSetGames == 8 {
+                // Tiebreak at 8-8 for Pro Set (simplified - first to 9 wins)
                 if team1CurrentSetGames > team2CurrentSetGames {
                     winSet(for: 1)
                 } else {
                     winSet(for: 2)
                 }
             }
-            // If 6-6, continue playing (simplified - no tiebreak implementation)
+        } else {
+            // Standard sets: First to 6 games with 2 game lead, tiebreak at 6-6
+            if team1CurrentSetGames >= 6 || team2CurrentSetGames >= 6 {
+                if abs(gamesDiff) >= 2 {
+                    // Set won with 2 game lead
+                    if team1CurrentSetGames > team2CurrentSetGames {
+                        winSet(for: 1)
+                    } else {
+                        winSet(for: 2)
+                    }
+                } else if team1CurrentSetGames == 7 || team2CurrentSetGames == 7 {
+                    // Tiebreak won (first to 7)
+                    if team1CurrentSetGames > team2CurrentSetGames {
+                        winSet(for: 1)
+                    } else {
+                        winSet(for: 2)
+                    }
+                }
+                // If 6-6, continue playing (simplified - no tiebreak implementation)
+            }
         }
     }
     
     private func winSet(for team: Int) {
+        // Check if we need to start super tie-break
+        if matchFormat == .bestOf3WithSuperTiebreak && currentSet == 2 {
+            let team1SetsWon = countSetsWon(for: 1)
+            let team2SetsWon = countSetsWon(for: 2)
+            
+            // If each team has won one set, start super tie-break instead of set 3
+            if team1SetsWon == 1 && team2SetsWon == 1 {
+                startSuperTiebreak()
+                return
+            }
+        }
+        
         // Move to next set
         currentSet += 1
         
@@ -176,28 +284,22 @@ class PadelGame: ObservableObject {
         let team1SetsWon = countSetsWon(for: 1)
         let team2SetsWon = countSetsWon(for: 2)
         
-        // Calculate the minimum sets needed to win
-        let setsToWin = (bestOfSets + 1) / 2
+        // Calculate the minimum sets needed to win based on match format
+        let setsToWin = matchFormat.setsToWin
         
         // Check if either team has reached the required number of sets to win
-        // AND if the other team cannot catch up even if they win all remaining sets
-        let remainingSets = bestOfSets - currentSet + 1
-        
-        // Team 1 wins if they have enough sets AND Team 2 cannot catch up
-        if team1SetsWon >= setsToWin && (team1SetsWon - team2SetsWon) > remainingSets {
+        if team1SetsWon >= setsToWin {
             isMatchFinished = true
             winningTeam = 1
             print("🏆 Team 1 wins the match! Final score: \(team1SetsWon) - \(team2SetsWon)")
-        }
-        // Team 2 wins if they have enough sets AND Team 1 cannot catch up
-        else if team2SetsWon >= setsToWin && (team2SetsWon - team1SetsWon) > remainingSets {
+        } else if team2SetsWon >= setsToWin {
             isMatchFinished = true
             winningTeam = 2
             print("🏆 Team 2 wins the match! Final score: \(team1SetsWon) - \(team2SetsWon)")
         }
         
         // If we've played all sets and there's a clear winner
-        if currentSet > bestOfSets && !isMatchFinished {
+        if currentSet > matchFormat.maxSets && !isMatchFinished {
             if team1SetsWon > team2SetsWon {
                 isMatchFinished = true
                 winningTeam = 1
@@ -217,17 +319,27 @@ class PadelGame: ObservableObject {
         var setsWon = 0
         
         // Count sets won by checking which team has more games in each set
-        // Only count sets as won when a team reaches 6+ games and has more games than the other team
         let maxSets = max(team1SetGames.count, team2SetGames.count)
+        let gamesToWin = matchFormat.gamesToWinSet
         
         for setIndex in 0..<maxSets {
             let team1Games = setIndex < team1SetGames.count ? team1SetGames[setIndex] : 0
             let team2Games = setIndex < team2SetGames.count ? team2SetGames[setIndex] : 0
             
-            if team1Games >= 6 && team1Games > team2Games {
-                setsWon += team == 1 ? 1 : 0
-            } else if team2Games >= 6 && team2Games > team1Games {
-                setsWon += team == 2 ? 1 : 0
+            if matchFormat == .proSet {
+                // Pro Set: first to 9 games
+                if team1Games >= 9 && team1Games > team2Games {
+                    setsWon += team == 1 ? 1 : 0
+                } else if team2Games >= 9 && team2Games > team1Games {
+                    setsWon += team == 2 ? 1 : 0
+                }
+            } else {
+                // Standard sets: first to 6 games with 2 game lead, or 7-6 tiebreak
+                if team1Games >= 6 && team1Games > team2Games {
+                    setsWon += team == 1 ? 1 : 0
+                } else if team2Games >= 6 && team2Games > team1Games {
+                    setsWon += team == 2 ? 1 : 0
+                }
             }
         }
         
@@ -255,26 +367,74 @@ class PadelGame: ObservableObject {
         isDeuce = false
         advantageTeam = nil
         
+        // Reset super tie-break
+        isSuperTiebreak = false
+        superTiebreakScore1 = 0
+        superTiebreakScore2 = 0
+        
         // Reset all set games arrays
         team1SetGames.removeAll()
         team2SetGames.removeAll()
     }
     
     func resetGame() {
-        team1GameScore = 0
-        team2GameScore = 0
-        isDeuce = false
-        advantageTeam = nil
+        if isSuperTiebreak {
+            superTiebreakScore1 = 0
+            superTiebreakScore2 = 0
+        } else {
+            team1GameScore = 0
+            team2GameScore = 0
+            isDeuce = false
+            advantageTeam = nil
+        }
     }
     
-    func setBestOf(_ value: Int) {
-        bestOfSets = value
+    func setMatchFormat(_ format: MatchFormat) {
+        matchFormat = format
         resetMatch()
+    }
+    
+    // MARK: - Super Tie-break Methods
+    
+    private func startSuperTiebreak() {
+        isSuperTiebreak = true
+        superTiebreakScore1 = 0
+        superTiebreakScore2 = 0
+        print("🎾 Starting Super Tie-break (first to 10 points, win by 2)")
+    }
+    
+    private func checkSuperTiebreakWin() {
+        // Super tie-break: first to 10 points, win by 2
+        let scoreDiff = superTiebreakScore1 - superTiebreakScore2
+        
+        if superTiebreakScore1 >= 10 || superTiebreakScore2 >= 10 {
+            if abs(scoreDiff) >= 2 {
+                // Super tie-break won
+                if superTiebreakScore1 > superTiebreakScore2 {
+                    winSuperTiebreak(for: 1)
+                } else {
+                    winSuperTiebreak(for: 2)
+                }
+            }
+        }
+    }
+    
+    private func winSuperTiebreak(for team: Int) {
+        isMatchFinished = true
+        winningTeam = team
+        print("🏆 Team \(team) wins the Super Tie-break! Final score: \(superTiebreakScore1) - \(superTiebreakScore2)")
     }
     
     // MARK: - Display Helpers
     
     func displayGameScore(for team: Int) -> String {
+        // Handle super tie-break display
+        if isSuperTiebreak {
+            let score = team == 1 ? superTiebreakScore1 : superTiebreakScore2
+            return "\(score)"
+        }
+        
+        // Regular game scoring display
         let score = team == 1 ? team1GameScore : team2GameScore
         
         if isDeuce {
@@ -303,6 +463,9 @@ class PadelGame: ObservableObject {
     }
     
     var currentSetScore: String {
+        if isSuperTiebreak {
+            return "\(superTiebreakScore1) - \(superTiebreakScore2)"
+        }
         let team1Games = getTeam1GamesForSet(currentSet)
         let team2Games = getTeam2GamesForSet(currentSet)
         return "\(team1Games) - \(team2Games)"
@@ -312,5 +475,9 @@ class PadelGame: ObservableObject {
         let team1Sets = countSetsWon(for: 1)
         let team2Sets = countSetsWon(for: 2)
         return "\(team1Sets) - \(team2Sets)"
+    }
+    
+    var bestOfSets: Int {
+        return matchFormat.maxSets
     }
 }
